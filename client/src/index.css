@@ -36,6 +36,61 @@
   --hover: #1f2937;
 }
 
+.bubble {
+  position: relative;
+  background-color: var(--bubble-bg, var(--bubble-other-bg));
+  color: var(--bubble-text, var(--bubble-other-text));
+  border: 1px solid var(--bubble-border, transparent);
+  border-radius: 16px;
+}
+
+.bubble-self {
+  --bubble-bg: var(--bubble-self-bg);
+  --bubble-text: var(--bubble-self-text);
+  --bubble-border: transparent;
+  border-radius: 16px 6px 16px 16px; /* flatten top-right near tail */
+}
+
+.bubble-other {
+  --bubble-bg: var(--bubble-other-bg);
+  --bubble-text: var(--bubble-other-text);
+  --bubble-border: var(--border);
+  border-radius: 6px 16px 16px 16px; /* flatten top-left near tail */
+}
+
+.bubble-status {
+  --bubble-bg: var(--status-bg);
+  --bubble-text: var(--status-text);
+  --bubble-border: transparent;
+}
+
+.bubble-self::after,
+.bubble-other::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  width: 0;
+  height: 0;
+}
+
+.bubble-self::after {
+  right: -10px;
+  border-top: 10px solid transparent;
+  border-bottom: 10px solid transparent;
+  border-left: 12px solid var(--bubble-bg, var(--bubble-self-bg));
+}
+
+.bubble-other::after {
+  left: -10px;
+  border-top: 10px solid transparent;
+  border-bottom: 10px solid transparent;
+  border-right: 12px solid var(--bubble-bg, var(--bubble-other-bg));
+}
+
+.bubble-status::after {
+  display: none;
+}
+
 .menu-item {
   background-color: transparent;
   color: var(--text);

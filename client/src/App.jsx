@@ -210,24 +210,30 @@ export default function App() {
   const bubbleStyles = (msg) => {
     if (msg.username === username) {
       return {
-        backgroundColor: "var(--bubble-self-bg)",
         color: "var(--bubble-self-text)",
         border: "1px solid transparent",
+        "--bubble-bg": "var(--bubble-self-bg)",
+        "--bubble-text": "var(--bubble-self-text)",
+        "--bubble-border": "transparent",
       };
     }
 
     if (msg.type === "status") {
       return {
-        backgroundColor: "var(--status-bg)",
         color: "var(--status-text)",
         border: "1px solid transparent",
+        "--bubble-bg": "var(--status-bg)",
+        "--bubble-text": "var(--status-text)",
+        "--bubble-border": "transparent",
       };
     }
 
     return {
-      backgroundColor: "var(--bubble-other-bg)",
       color: "var(--bubble-other-text)",
       border: `1px solid var(--border)`,
+      "--bubble-bg": "var(--bubble-other-bg)",
+      "--bubble-text": "var(--bubble-other-text)",
+      "--bubble-border": "var(--border)",
     };
   };
 
@@ -325,10 +331,12 @@ export default function App() {
             }`}
           >
             <div
-              className={`relative max-w-xs lg:max-w-md px-4 py-3 rounded-2xl shadow-sm ${
+              className={`relative max-w-xs lg:max-w-md px-4 py-3 shadow-sm bubble ${
                 msg.type === "status"
-                  ? "text-center mx-auto text-sm italic"
-                  : ""
+                  ? "text-center mx-auto text-sm italic bubble-status"
+                  : msg.username === username
+                  ? "bubble-self"
+                  : "bubble-other"
               }`}
               style={bubbleStyles(msg)}
             >

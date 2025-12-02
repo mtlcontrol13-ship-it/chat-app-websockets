@@ -15,6 +15,7 @@
   --bubble-other-text: #0f172a;
   --status-bg: #e5e7eb;
   --status-text: #4b5563;
+  --hover: #e2e8f0;
 }
 
 [data-theme="dark"] {
@@ -32,4 +33,15 @@
   --bubble-other-text: #e5e7eb;
   --status-bg: #111827;
   --status-text: #94a3b8;
+  --hover: #1f2937;
+}
+
+.menu-item {
+  background-color: transparent;
+  color: var(--text);
+  cursor: pointer;
+}
+
+.menu-item:hover {
+  background-color: var(--hover);
 }

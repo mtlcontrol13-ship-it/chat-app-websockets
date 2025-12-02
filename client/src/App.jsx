@@ -338,7 +338,7 @@ export default function App() {
                   <button
                     type="button"
                     aria-label="Message actions"
-                    className="p-1 rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-blue-400"
+                    className="p-1 rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-blue-400 cursor-pointer"
                     onClick={(e) => {
                       e.stopPropagation();
                       setOpenMenuId((prev) => (prev === msg.id ? null : msg.id));
@@ -362,8 +362,7 @@ export default function App() {
                     }}
                   >
                     <li
-                      className="px-4 py-2 hover:bg-blue-50 dark:hover:bg-blue-900"
-                      style={{ cursor: "pointer" }}
+                      className="px-4 py-2 menu-item"
                       onClick={(e) => {
                         e.stopPropagation();
                         setOpenMenuId(null);
@@ -372,8 +371,8 @@ export default function App() {
                       Edit
                     </li>
                     <li
-                      className="px-4 py-2 hover:bg-blue-50 dark:hover:bg-red-900"
-                      style={{ cursor: "pointer", color: "#ef4444" }}
+                      className="px-4 py-2 menu-item"
+                      style={{ color: "#ef4444" }}
                       onClick={(e) => {
                         e.stopPropagation();
                         setOpenMenuId(null);

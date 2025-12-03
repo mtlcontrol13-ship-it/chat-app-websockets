@@ -1,6 +1,6 @@
 // App.jsx
 import { useState, useEffect, useRef } from "react";
-import { Send, Circle, EllipsisVertical } from "lucide-react";
+import { Send, Circle } from "lucide-react";
 import ChatBubble from "./components/ChatBubble";
 
 const WS_URL = import.meta.env.VITE_WS_URL || "ws://localhost:8080";
@@ -20,6 +20,8 @@ export default function App() {
     if (typeof window === "undefined") return false;
     return localStorage.getItem("theme") === "dark";
   });
+  const [editingId, setEditingId] = useState(null);
+  const [editingText, setEditingText] = useState("");
 
   const socketRef = useRef(null);
   const reconnectTimeoutRef = useRef(null);
@@ -105,7 +107,19 @@ export default function App() {
 
           if (msg.type === "ping") return;
 
-          setMessages((prev) => [...prev, { ...msg, id: crypto.randomUUID() }]);
+          if (msg.type === "edit" && msg.id) {
+            setMessages((prev) =>
+              prev.map((m) =>
+                m.id === msg.id
+                  ? { ...m, text: msg.text, timestamp: msg.timestamp ?? m.timestamp }
+                  : m
+              )
+            );
+            return;
+          }
+
+          const incomingId = msg.id || crypto.randomUUID();
+          setMessages((prev) => [...prev, { ...msg, id: incomingId }]);
         } catch (e) {
           console.warn("Non-JSON message ignored:", data);
         }
@@ -171,7 +185,9 @@ export default function App() {
     e.preventDefault();
     if (!input.trim() || !isConnected || !socketRef.current) return;
 
+    const id = crypto.randomUUID();
     const message = {
+      id,
       text: input.trim(),
       username,
       timestamp: Date.now(),
@@ -179,6 +195,41 @@ export default function App() {
 
     socketRef.current.send(JSON.stringify(message));
     setInput("");
+  };
+
+  const startEditingMessage = (msg) => {
+    if (msg.username !== username || msg.type === "status") return;
+    setEditingId(msg.id);
+    setEditingText(msg.text);
+  };
+
+  const cancelEditing = () => {
+    setEditingId(null);
+    setEditingText("");
+  };
+
+  const saveEdit = () => {
+    if (!editingId || !editingText.trim()) {
+      cancelEditing();
+      return;
+    }
+
+    const updatedText = editingText.trim();
+    const payload = {
+      type: "edit",
+      id: editingId,
+      text: updatedText,
+      username,
+      timestamp: Date.now(),
+    };
+
+    setMessages((prev) =>
+      prev.map((m) =>
+        m.id === editingId ? { ...m, text: updatedText, timestamp: payload.timestamp } : m
+      )
+    );
+    socketRef.current?.send(JSON.stringify(payload));
+    cancelEditing();
   };
 
   const startEditingName = () => {
@@ -312,6 +363,7 @@ export default function App() {
           }
 
           const isOwn = msg.username === username;
+          const isEditing = editingId === msg.id && isOwn;
           const time = new Date(msg.timestamp).toLocaleTimeString([], {
             hour: "2-digit",
             minute: "2-digit",
@@ -322,7 +374,18 @@ export default function App() {
               key={msg.id}
               className={`flex ${isOwn ? "justify-end" : "justify-start"}`}
             >
-              <ChatBubble text={msg.text} time={time} isOwn={isOwn} />
+              <ChatBubble
+                text={isEditing ? editingText : msg.text}
+                time={time}
+                isOwn={isOwn}
+                showActions={isOwn && !isEditing}
+                isEditing={isEditing}
+                editValue={editingText}
+                onEditChange={setEditingText}
+                onEditSave={saveEdit}
+                onEditCancel={cancelEditing}
+                onEdit={() => startEditingMessage(msg)}
+              />
             </div>
           );
         })}

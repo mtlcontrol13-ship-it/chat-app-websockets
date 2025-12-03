@@ -8,9 +8,9 @@
   --border: #e2e8f0;
   --input-bg: #ffffff;
   --input-border: #cbd5e1;
-  --bubble-self-bg: #2563eb;
-  --bubble-self-text: #ffffff;
-  --bubble-self-muted: #dbeafe;
+  --bubble-self-bg: #dcf8c6; /* WhatsApp-like green */
+  --bubble-self-text: #0f172a;
+  --bubble-self-muted: #1f2937;
   --bubble-other-bg: #ffffff;
   --bubble-other-text: #0f172a;
   --status-bg: #e5e7eb;
@@ -26,9 +26,9 @@
   --border: #1f2937;
   --input-bg: #0b1224;
   --input-border: #1e293b;
-  --bubble-self-bg: #2563eb;
-  --bubble-self-text: #e5edff;
-  --bubble-self-muted: #bfdbfe;
+  --bubble-self-bg: #0f172a;
+  --bubble-self-text: #e5e7eb;
+  --bubble-self-muted: #cbd5e1;
   --bubble-other-bg: #111827;
   --bubble-other-text: #e5e7eb;
   --status-bg: #111827;

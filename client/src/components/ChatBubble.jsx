@@ -7,6 +7,11 @@ const ChatBubble = ({
   time = "12:34",
   isOwn = false,
   showActions = true,
+  isEditing = false,
+  editValue = "",
+  onEditChange,
+  onEditSave,
+  onEditCancel,
   onEdit,
   onDelete,
 }) => {
@@ -14,6 +19,11 @@ const ChatBubble = ({
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const handleEdit = onEdit ?? (() => {});
   const handleDelete = onDelete ?? (() => {});
+  const handleEditChange = onEditChange ?? (() => {});
+  const handleEditSave = onEditSave ?? (() => {});
+  const handleEditCancel = onEditCancel ?? (() => {});
+  const bubbleTextColor = isOwn ? "#0f172a" : "#0f172a";
+  const bubbleMutedColor = isOwn ? "#1f2937" : "#475569";
 
   return (
     <div
@@ -30,9 +40,10 @@ const ChatBubble = ({
           rounded-2xl 
           ${isOwn ? "bg-[#dcf8c6] rounded-br-sm" : "bg-white rounded-bl-sm"}
         `}
+        style={{ color: bubbleTextColor }}
       >
         {/* Message actions */}
-        {showActions && (
+        {showActions && !isEditing && (
           <>
             {(isHovered || isMenuOpen) && (
               <button
@@ -101,31 +112,84 @@ const ChatBubble = ({
           </>
         )}
 
-        {/* Message text */}
-        <p className="whitespace-pre-line wrap-break-word pr-10 text-[#111b21]">
-          {text}
-        </p>
+        {isEditing ? (
+          <div className="flex flex-col gap-2">
+            <textarea
+              className="w-full rounded-md border px-2 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-400"
+              style={{
+                backgroundColor: "transparent",
+                color: bubbleTextColor,
+                caretColor: bubbleTextColor,
+                borderColor: "var(--border)",
+                minHeight: "96px",
+              }}
+              value={editValue}
+              onChange={(e) => handleEditChange(e.target.value)}
+              rows={3}
+            />
+            <div className="flex gap-2 justify-end text-xs">
+              <button
+                type="button"
+              className="px-3 py-1 rounded-full border transition-colors"
+                style={{
+                  borderColor: "var(--border)",
+                  color: bubbleTextColor,
+                  backgroundColor: "transparent",
+                }}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  handleEditCancel();
+                }}
+              >
+                Cancel
+              </button>
+              <button
+                type="button"
+                className="px-3 py-1 rounded-full bg-blue-600 text-white hover:bg-blue-700 transition-colors"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  handleEditSave();
+                }}
+              >
+                Save
+              </button>
+            </div>
+          </div>
+        ) : (
+          <>
+            {/* Message text */}
+            <p
+              className="whitespace-pre-line wrap-break-word pr-10"
+              style={{ color: bubbleTextColor }}
+            >
+              {text}
+            </p>
 
-        {/* Time + ticks */}
-        <div className="mt-1 flex items-center justify-end gap-1 text-[0.65rem] text-gray-500">
-          <span>{time}</span>
-          {isOwn && (
-            <svg viewBox="0 0 16 15" className="h-3 w-3" aria-hidden="true">
-              <path
-                d="M1 8.5 4.5 12.5 11 1"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="1.3"
-              />
-              <path
-                d="M5.5 8.5 9 12.5 15 1"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="1.3"
-              />
-            </svg>
-          )}
-        </div>
+            {/* Time + ticks */}
+            <div
+              className="mt-1 flex items-center justify-end gap-1 text-[0.65rem]"
+              style={{ color: bubbleMutedColor }}
+            >
+              <span>{time}</span>
+              {isOwn && (
+                <svg viewBox="0 0 16 15" className="h-3 w-3" aria-hidden="true">
+                  <path
+                    d="M1 8.5 4.5 12.5 11 1"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="1.3"
+                  />
+                  <path
+                    d="M5.5 8.5 9 12.5 15 1"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="1.3"
+                  />
+                </svg>
+              )}
+            </div>
+          </>
+        )}
 
         {/* Tail */}
         <span

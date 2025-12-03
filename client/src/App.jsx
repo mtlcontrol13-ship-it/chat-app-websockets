@@ -22,6 +22,7 @@ export default function App() {
   });
   const [editingId, setEditingId] = useState(null);
   const [editingText, setEditingText] = useState("");
+  const seenAckRef = useRef(new Set());
 
   const socketRef = useRef(null);
   const reconnectTimeoutRef = useRef(null);
@@ -123,10 +124,22 @@ export default function App() {
             return;
           }
 
+          if (msg.type === "seen" && msg.id) {
+            setMessages((prev) =>
+              prev.map((m) => (m.id === msg.id ? { ...m, seen: true } : m))
+            );
+            return;
+          }
+
           const incomingId = msg.id || crypto.randomUUID();
           setMessages((prev) => [
             ...prev,
-            { ...msg, id: incomingId, edited: !!msg.edited },
+            {
+              ...msg,
+              id: incomingId,
+              edited: !!msg.edited,
+              seen: !!msg.seen,
+            },
           ]);
         } catch (e) {
           console.warn("Non-JSON message ignored:", data);
@@ -181,6 +194,26 @@ export default function App() {
     };
   }, [isConnected]);
 
+  // Send seen receipts for messages from others once displayed
+  useEffect(() => {
+    if (!isConnected || !socketRef.current) return;
+
+    messages.forEach((msg) => {
+      if (msg.username === username || msg.type === "status") return;
+      if (seenAckRef.current.has(msg.id)) return;
+
+      seenAckRef.current.add(msg.id);
+      socketRef.current.send(
+        JSON.stringify({
+          type: "seen",
+          id: msg.id,
+          username,
+          timestamp: Date.now(),
+        })
+      );
+    });
+  }, [messages, isConnected, username]);
+
   const sendIdentify = (name = usernameRef.current) => {
     if (socketRef.current?.readyState === WebSocket.OPEN) {
       socketRef.current.send(
@@ -200,6 +233,7 @@ export default function App() {
       username,
       timestamp: Date.now(),
       edited: false,
+      seen: false,
     };
 
     socketRef.current.send(JSON.stringify(message));
@@ -231,6 +265,7 @@ export default function App() {
       username,
       timestamp: Date.now(),
       edited: true,
+      seen: false,
     };
 
     setMessages((prev) =>
@@ -391,6 +426,7 @@ export default function App() {
                 time={time}
                 isOwn={isOwn}
                 edited={msg.edited}
+                seen={msg.seen}
                 showActions={isOwn && !isEditing}
                 isEditing={isEditing}
                 editValue={editingText}

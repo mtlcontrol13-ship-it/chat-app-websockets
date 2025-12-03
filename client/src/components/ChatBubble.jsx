@@ -9,6 +9,7 @@ const ChatBubble = ({
   showActions = true,
   isEditing = false,
   editValue = "",
+  edited = false,
   onEditChange,
   onEditSave,
   onEditCancel,
@@ -171,6 +172,7 @@ const ChatBubble = ({
               style={{ color: bubbleMutedColor }}
             >
               <span>{time}</span>
+              {edited && <span className="ml-1 italic">(edited)</span>}
               {isOwn && (
                 <svg viewBox="0 0 16 15" className="h-3 w-3" aria-hidden="true">
                   <path

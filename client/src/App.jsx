@@ -111,7 +111,12 @@ export default function App() {
             setMessages((prev) =>
               prev.map((m) =>
                 m.id === msg.id
-                  ? { ...m, text: msg.text, timestamp: msg.timestamp ?? m.timestamp }
+                  ? {
+                      ...m,
+                      text: msg.text,
+                      edited: true,
+                      timestamp: msg.timestamp ?? m.timestamp,
+                    }
                   : m
               )
             );
@@ -119,7 +124,10 @@ export default function App() {
           }
 
           const incomingId = msg.id || crypto.randomUUID();
-          setMessages((prev) => [...prev, { ...msg, id: incomingId }]);
+          setMessages((prev) => [
+            ...prev,
+            { ...msg, id: incomingId, edited: !!msg.edited },
+          ]);
         } catch (e) {
           console.warn("Non-JSON message ignored:", data);
         }
@@ -191,6 +199,7 @@ export default function App() {
       text: input.trim(),
       username,
       timestamp: Date.now(),
+      edited: false,
     };
 
     socketRef.current.send(JSON.stringify(message));
@@ -221,11 +230,14 @@ export default function App() {
       text: updatedText,
       username,
       timestamp: Date.now(),
+      edited: true,
     };
 
     setMessages((prev) =>
       prev.map((m) =>
-        m.id === editingId ? { ...m, text: updatedText, timestamp: payload.timestamp } : m
+        m.id === editingId
+          ? { ...m, text: updatedText, edited: true, timestamp: payload.timestamp }
+          : m
       )
     );
     socketRef.current?.send(JSON.stringify(payload));
@@ -378,6 +390,7 @@ export default function App() {
                 text={isEditing ? editingText : msg.text}
                 time={time}
                 isOwn={isOwn}
+                edited={msg.edited}
                 showActions={isOwn && !isEditing}
                 isEditing={isEditing}
                 editValue={editingText}

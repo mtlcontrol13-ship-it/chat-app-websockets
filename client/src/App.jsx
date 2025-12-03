@@ -1,6 +1,7 @@
 // App.jsx
 import { useState, useEffect, useRef } from "react";
 import { Send, Circle, EllipsisVertical } from "lucide-react";
+import ChatBubble from "./components/ChatBubble";
 
 const WS_URL = import.meta.env.VITE_WS_URL || "ws://localhost:8080";
 
@@ -16,7 +17,6 @@ export default function App() {
   const [lastStatusTime, setLastStatusTime] = useState(Date.now());
   const [latencyMs, setLatencyMs] = useState(null);
   const [isDark, setIsDark] = useState(false);
-  const [openMenuId, setOpenMenuId] = useState(null);
 
   const socketRef = useRef(null);
   const reconnectTimeoutRef = useRef(null);
@@ -207,36 +207,6 @@ export default function App() {
     }
   };
 
-  const bubbleStyles = (msg) => {
-    if (msg.username === username) {
-      return {
-        color: "var(--bubble-self-text)",
-        border: "1px solid transparent",
-        "--bubble-bg": "var(--bubble-self-bg)",
-        "--bubble-text": "var(--bubble-self-text)",
-        "--bubble-border": "transparent",
-      };
-    }
-
-    if (msg.type === "status") {
-      return {
-        color: "var(--status-text)",
-        border: "1px solid transparent",
-        "--bubble-bg": "var(--status-bg)",
-        "--bubble-text": "var(--status-text)",
-        "--bubble-border": "transparent",
-      };
-    }
-
-    return {
-      color: "var(--bubble-other-text)",
-      border: `1px solid var(--border)`,
-      "--bubble-bg": "var(--bubble-other-bg)",
-      "--bubble-text": "var(--bubble-other-text)",
-      "--bubble-border": "var(--border)",
-    };
-  };
-
   return (
     <div
       className="flex flex-col h-screen"
@@ -321,104 +291,39 @@ export default function App() {
       <div
         className="flex-1 overflow-y-auto px-4 py-6 space-y-4"
         style={{ backgroundColor: "var(--bg)" }}
-        onClick={() => setOpenMenuId(null)}
       >
-        {messages.map((msg) => (
-          <div
-            key={msg.id}
-            className={`flex ${
-              msg.username === username ? "justify-end" : "justify-start"
-            }`}
-          >
-            <div
-              className={`relative max-w-xs lg:max-w-md px-4 py-3 shadow-sm bubble ${
-                msg.type === "status"
-                  ? "text-center mx-auto text-sm italic bubble-status"
-                  : msg.username === username
-                  ? "bubble-self"
-                  : "bubble-other"
-              }`}
-              style={bubbleStyles(msg)}
-            >
-              {/* Message actions */}
-              {msg.type !== "status" && (
-                <div className="absolute top-2 right-2">
-                  <button
-                    type="button"
-                    aria-label="Message actions"
-                    className="p-1 rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-blue-400 cursor-pointer"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      setOpenMenuId((prev) => (prev === msg.id ? null : msg.id));
-                    }}
-                    style={{
-                      backgroundColor: "transparent",
-                      color: "var(--muted)",
-                    }}
-                  >
-                    <EllipsisVertical className="w-5 h-5" />
-                  </button>
-                  <ul
-                    className="absolute right-0 mt-2 w-32 rounded-lg shadow-lg transition-opacity"
-                    style={{
-                      backgroundColor: "var(--panel)",
-                      border: `1px solid var(--border)`,
-                      color: "var(--text)",
-                      opacity: openMenuId === msg.id ? 1 : 0,
-                      visibility: openMenuId === msg.id ? "visible" : "hidden",
-                      pointerEvents: openMenuId === msg.id ? "auto" : "none",
-                    }}
-                  >
-                    <li
-                      className="px-4 py-2 menu-item"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        setOpenMenuId(null);
-                      }}
-                    >
-                      Edit
-                    </li>
-                    <li
-                      className="px-4 py-2 menu-item"
-                      style={{ color: "#ef4444" }}
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        setOpenMenuId(null);
-                      }}
-                    >
-                      Delete
-                    </li>
-                  </ul>
-                </div>
-              )}
-              {msg.type !== "status" && msg.username !== username && (
-                <p
-                  className="text-xs font-medium opacity-80 mb-1"
-                  style={{ color: "var(--muted)" }}
+        {messages.map((msg) => {
+          if (msg.type === "status") {
+            return (
+              <div key={msg.id} className="flex justify-center">
+                <div
+                  className="text-sm italic px-3 py-1 rounded-full"
+                  style={{
+                    color: "var(--status-text)",
+                    backgroundColor: "var(--status-bg)",
+                  }}
                 >
-                  {msg.username}
-                </p>
-              )}
-              <p className={msg.type === "status" ? "text-sm" : ""}>
-                {msg.text}
-              </p>
-              <p
-                className="text-xs mt-1"
-                style={{
-                  color:
-                    msg.username === username
-                      ? "var(--bubble-self-muted)"
-                      : "var(--muted)",
-                }}
-              >
-                {new Date(msg.timestamp).toLocaleTimeString([], {
-                  hour: "2-digit",
-                  minute: "2-digit",
-                })}
-              </p>
+                  {msg.text}
+                </div>
+              </div>
+            );
+          }
+
+          const isOwn = msg.username === username;
+          const time = new Date(msg.timestamp).toLocaleTimeString([], {
+            hour: "2-digit",
+            minute: "2-digit",
+          });
+
+          return (
+            <div
+              key={msg.id}
+              className={`flex ${isOwn ? "justify-end" : "justify-start"}`}
+            >
+              <ChatBubble text={msg.text} time={time} isOwn={isOwn} />
             </div>
-          </div>
-        ))}
+          );
+        })}
         <div ref={messagesEndRef} />
       </div>
 

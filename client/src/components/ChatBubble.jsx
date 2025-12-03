@@ -11,6 +11,7 @@ const ChatBubble = ({
   onDelete,
 }) => {
   const [isHovered, setIsHovered] = useState(false);
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
   const handleEdit = onEdit ?? (() => {});
   const handleDelete = onDelete ?? (() => {});
 
@@ -18,7 +19,10 @@ const ChatBubble = ({
     <div
       className={`flex w-full mb-2 ${isOwn ? "justify-end" : "justify-start"}`}
       onMouseEnter={() => setIsHovered(true)}
-      onMouseLeave={() => setIsHovered(false)}
+      onMouseLeave={() => {
+        setIsHovered(false);
+        setIsMenuOpen(false);
+      }}
     >
       <div
         className={`
@@ -28,39 +32,57 @@ const ChatBubble = ({
         `}
       >
         {/* Message actions */}
-        {isHovered && showActions && (
-          <div
-            className={`absolute -top-3 ${
-              isOwn ? "right-0" : "left-0"
-            } flex items-center gap-2 px-3 py-1 rounded-full border shadow-sm text-xs`}
-            style={{
-              backgroundColor: isOwn ? "#d4edba" : "#ffffff",
-              borderColor: "#d1d5db",
-              color: "#475569",
-            }}
-          >
-            <EllipsisVertical className="w-4 h-4 opacity-70" />
-            <button
-              type="button"
-              className="hover:text-blue-600 transition-colors"
-              onClick={(e) => {
-                e.stopPropagation();
-                handleEdit();
-              }}
-            >
-              Edit
-            </button>
-            <button
-              type="button"
-              className="hover:text-red-500 transition-colors"
-              onClick={(e) => {
-                e.stopPropagation();
-                handleDelete();
-              }}
-            >
-              Delete
-            </button>
-          </div>
+        {showActions && (
+          <>
+            {(isHovered || isMenuOpen) && (
+              <button
+                type="button"
+                aria-label="Message actions"
+                className="absolute top-1/2 -translate-y-1/2 p-1 rounded-full hover:bg-gray-200 transition-colors focus:outline-none focus:ring-2 focus:ring-blue-400"
+                style={isOwn ? { left: "-36px" } : { right: "-36px" }}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setIsMenuOpen((prev) => !prev);
+                }}
+              >
+                <EllipsisVertical className="w-4 h-4 text-gray-500" />
+              </button>
+            )}
+
+            {isMenuOpen && (
+              <div
+                className="absolute top-1/2 -translate-y-1/2 flex flex-col gap-1 px-3 py-2 rounded-lg border shadow-sm text-xs bg-white"
+                style={{
+                  ...(isOwn ? { left: "-56px" } : { right: "-56px" }),
+                  borderColor: "#d1d5db",
+                  color: "#475569",
+                }}
+              >
+                <button
+                  type="button"
+                  className="text-left hover:text-blue-600 transition-colors"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setIsMenuOpen(false);
+                    handleEdit();
+                  }}
+                >
+                  Edit
+                </button>
+                <button
+                  type="button"
+                  className="text-left hover:text-red-500 transition-colors"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setIsMenuOpen(false);
+                    handleDelete();
+                  }}
+                >
+                  Delete
+                </button>
+              </div>
+            )}
+          </>
         )}
 
         {/* Message text */}

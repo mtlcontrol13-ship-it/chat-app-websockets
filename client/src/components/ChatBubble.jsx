@@ -39,7 +39,11 @@ const ChatBubble = ({
                 type="button"
                 aria-label="Message actions"
                 className="absolute top-1/2 -translate-y-1/2 p-1 rounded-full hover:bg-gray-200 transition-colors focus:outline-none focus:ring-2 focus:ring-blue-400"
-                style={isOwn ? { left: "-36px" } : { right: "-36px" }}
+                style={
+                  isOwn
+                    ? { right: "calc(100% + 4px)" }
+                    : { left: "calc(100% + 4px)" }
+                }
                 onClick={(e) => {
                   e.stopPropagation();
                   setIsMenuOpen((prev) => !prev);
@@ -51,16 +55,24 @@ const ChatBubble = ({
 
             {isMenuOpen && (
               <div
-                className="absolute top-1/2 -translate-y-1/2 flex flex-col gap-1 px-3 py-2 rounded-lg border shadow-sm text-xs bg-white"
-                style={{
-                  ...(isOwn ? { left: "-56px" } : { right: "-56px" }),
-                  borderColor: "#d1d5db",
-                  color: "#475569",
-                }}
+                className="absolute top-0 flex flex-col min-w-[140px] rounded-xl border shadow-lg text-sm bg-white overflow-hidden"
+                style={
+                  isOwn
+                    ? {
+                        right: "calc(100% + 8px)",
+                        borderColor: "#d1d5db",
+                        color: "#1f2937",
+                      }
+                    : {
+                        left: "calc(100% + 8px)",
+                        borderColor: "#d1d5db",
+                        color: "#1f2937",
+                      }
+                }
               >
                 <button
                   type="button"
-                  className="text-left hover:text-blue-600 transition-colors"
+                  className="text-left px-4 py-2 hover:bg-blue-50 transition-colors"
                   onClick={(e) => {
                     e.stopPropagation();
                     setIsMenuOpen(false);
@@ -71,7 +83,7 @@ const ChatBubble = ({
                 </button>
                 <button
                   type="button"
-                  className="text-left hover:text-red-500 transition-colors"
+                  className="text-left px-4 py-2 hover:bg-red-50 text-red-500 transition-colors"
                   onClick={(e) => {
                     e.stopPropagation();
                     setIsMenuOpen(false);

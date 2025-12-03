@@ -16,7 +16,10 @@ export default function App() {
   const [pendingName, setPendingName] = useState("");
   const [lastStatusTime, setLastStatusTime] = useState(Date.now());
   const [latencyMs, setLatencyMs] = useState(null);
-  const [isDark, setIsDark] = useState(false);
+  const [isDark, setIsDark] = useState(() => {
+    if (typeof window === "undefined") return false;
+    return localStorage.getItem("theme") === "dark";
+  });
 
   const socketRef = useRef(null);
   const reconnectTimeoutRef = useRef(null);
@@ -47,12 +50,11 @@ export default function App() {
     usernameRef.current = username;
   }, [username]);
 
-  // Apply theme to document root
+  // Apply + persist theme
   useEffect(() => {
-    document.documentElement.setAttribute(
-      "data-theme",
-      isDark ? "dark" : "light"
-    );
+    const theme = isDark ? "dark" : "light";
+    document.documentElement.setAttribute("data-theme", theme);
+    localStorage.setItem("theme", theme);
   }, [isDark]);
 
   const formatTimeWithMs = (ts) =>

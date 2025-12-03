@@ -1,5 +1,5 @@
+import { CopyIcon, Edit, EllipsisVertical, Trash, Trash2 } from "lucide-react";
 import { useState } from "react";
-import { EllipsisVertical } from "lucide-react";
 
 const ChatBubble = ({
   text,
@@ -94,6 +94,7 @@ const ChatBubble = ({
                     setIsMenuOpen(false);
                   }}
                 >
+                  <CopyIcon className="inline-block w-4 h-4 mr-2" />
                   Copy
                 </button>
                 <button
@@ -106,6 +107,7 @@ const ChatBubble = ({
                     handleEdit();
                   }}
                 >
+                  <Edit className="inline-block w-4 h-4 mr-2" />
                   Edit
                 </button>
                 <button
@@ -118,6 +120,7 @@ const ChatBubble = ({
                     handleDelete();
                   }}
                 >
+                  <Trash2 className="inline-block w-4 h-4 mr-2" />
                   Delete
                 </button>
               </div>

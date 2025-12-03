@@ -131,6 +131,11 @@ export default function App() {
             return;
           }
 
+          if (msg.type === "delete" && msg.id) {
+            setMessages((prev) => prev.filter((m) => m.id !== msg.id));
+            return;
+          }
+
           const incomingId = msg.id || crypto.randomUUID();
           setMessages((prev) => [
             ...prev,
@@ -244,6 +249,34 @@ export default function App() {
     if (msg.username !== username || msg.type === "status") return;
     setEditingId(msg.id);
     setEditingText(msg.text);
+  };
+
+  const deleteMessage = (msg) => {
+    if (msg.username !== username || msg.type === "status") return;
+
+    setMessages((prev) => prev.filter((m) => m.id !== msg.id));
+    if (editingId === msg.id) {
+      setEditingId(null);
+      setEditingText("");
+    }
+
+    socketRef.current?.send(
+      JSON.stringify({
+        type: "delete",
+        id: msg.id,
+        username,
+        timestamp: Date.now(),
+      })
+    );
+
+    socketRef.current?.send(
+      JSON.stringify({
+        type: "status",
+        text: `${username} deleted a message`,
+        username: "System",
+        timestamp: Date.now(),
+      })
+    );
   };
 
   const cancelEditing = () => {
@@ -434,6 +467,7 @@ export default function App() {
                 onEditSave={saveEdit}
                 onEditCancel={cancelEditing}
                 onEdit={() => startEditingMessage(msg)}
+                onDelete={() => deleteMessage(msg)}
               />
             </div>
           );

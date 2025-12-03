@@ -61,7 +61,7 @@ const ChatBubble = ({
                 setIsMenuOpen((prev) => !prev);
               }}
             >
-              <EllipsisVertical className="w-6 h-6 text-white" />
+              <EllipsisVertical className="w-5 h-5 text-white" />
             </button>
 
             {isMenuOpen && (

@@ -46,24 +46,23 @@ const ChatBubble = ({
         {/* Message actions */}
         {showActions && !isEditing && (
           <>
-            {(isHovered || isMenuOpen) && (
-              <button
-                type="button"
-                aria-label="Message actions"
-                className="absolute top-1/2 -translate-y-1/2 p-1 rounded-full hover:bg-gray-200 transition-colors focus:outline-none focus:ring-2 focus:ring-blue-400 cursor-pointer"
-                style={
-                  isOwn
-                    ? { right: "calc(100% + 4px)" }
-                    : { left: "calc(100% + 4px)" }
-                }
-                onClick={(e) => {
-                  e.stopPropagation();
-                  setIsMenuOpen((prev) => !prev);
-                }}
-              >
-                <EllipsisVertical className="w-4 h-4 text-gray-500" />
-              </button>
-            )}
+            <button
+              type="button"
+              aria-label="Message actions"
+              className="absolute top-1/2 -translate-y-1/2 p-1 rounded-full transition-colors cursor-pointer"
+              style={{
+                ...(isOwn
+                  ? { right: "calc(100% + 4px)" }
+                  : { left: "calc(100% + 4px)" }),
+                opacity: isHovered || isMenuOpen ? 1 : 0.6,
+              }}
+              onClick={(e) => {
+                e.stopPropagation();
+                setIsMenuOpen((prev) => !prev);
+              }}
+            >
+              <EllipsisVertical className="w-6 h-6 text-white" />
+            </button>
 
             {isMenuOpen && (
               <div

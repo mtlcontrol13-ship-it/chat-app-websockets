@@ -4,7 +4,8 @@
   "main": "server.js",
   "type": "module",
   "scripts": {
-    "dev": "bun --watch server.js"
+    "dev": "bun --watch server.js",
+    "start": "node server.js"
   },
   "keywords": [],
   "author": "",

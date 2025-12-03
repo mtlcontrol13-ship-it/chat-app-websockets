@@ -90,6 +90,18 @@ const ChatBubble = ({
                   style={{ backgroundColor: "transparent" }}
                   onClick={(e) => {
                     e.stopPropagation();
+                    navigator.clipboard.writeText(text);
+                    setIsMenuOpen(false);
+                  }}
+                >
+                  Copy
+                </button>
+                <button
+                  type="button"
+                  className="text-left px-4 py-2 hover:bg-blue-50 transition-colors cursor-pointer"
+                  style={{ backgroundColor: "transparent" }}
+                  onClick={(e) => {
+                    e.stopPropagation();
                     setIsMenuOpen(false);
                     handleEdit();
                   }}

@@ -9,7 +9,7 @@
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "description": "",
+  "description": "A simple WebSocket server using native WebSocket API in Node.js without any external libraries",
   "dependencies": {
     "ws": "^8.18.3"
   }

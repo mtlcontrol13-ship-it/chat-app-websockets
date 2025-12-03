@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { EllipsisVertical } from "lucide-react";
 
@@ -132,7 +131,7 @@ const ChatBubble = ({
             <div className="flex gap-2 justify-end text-xs">
               <button
                 type="button"
-              className="px-3 py-1 rounded-full border transition-colors"
+                className="px-3 py-1 rounded-full border transition-colors"
                 style={{
                   borderColor: "var(--border)",
                   color: bubbleTextColor,

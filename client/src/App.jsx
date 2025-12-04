@@ -8,6 +8,10 @@ import MessageInput from "./components/MessageInput";
 const AppContent = () => {
   const { username, messages } = useChat();
 
+  /**
+   * Get unique participants from messages plus current username
+   * @returns {string[]}
+   */
   const participants = Array.from(
     new Set(
       [username, ...messages.map((m) => m.username)].filter(
@@ -18,9 +22,7 @@ const AppContent = () => {
 
   return (
     <div className="flex h-screen" style={{ backgroundColor: "var(--bg)" }}>
-      <Sidebar
-        participants={participants}
-      />
+      <Sidebar participants={participants} />
       <div className="flex flex-col flex-1" style={{ color: "var(--text)" }}>
         <Header />
         <MessageList />

@@ -9,10 +9,9 @@ const Sidebar = ({ participants = [] }) => {
       }}
     >
       <div className="p-4 border-b" style={{ borderColor: "var(--border)" }}>
-        <p className="text-lg font-semibold">Native WebSocket Chat</p>
         <button
           type="button"
-          className="mt-3 text-sm px-4 py-2 rounded-full border transition-colors"
+          className="text-sm w-full px-4 py-2 rounded-full border transition-colors"
           style={{
             borderColor: "var(--border)",
             color: "var(--text)",

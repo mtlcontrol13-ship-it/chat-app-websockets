@@ -6,9 +6,14 @@ export const useWebSocketChat = () => {
   const [messages, setMessages] = useState([]);
   const [input, setInput] = useState("");
   const [isConnected, setIsConnected] = useState(false);
-  const [username, setUsername] = useState(
-    () => `User${Math.floor(Math.random() * 9000 + 1000)}`
-  );
+  const [username, setUsername] = useState(() => {
+    if (typeof window === "undefined") return `User${Math.floor(Math.random() * 9000 + 1000)}`;
+    return (
+      localStorage.getItem("chat-username") ||
+      sessionStorage.getItem("chat-username") ||
+      `User${Math.floor(Math.random() * 9000 + 1000)}`
+    );
+  });
   const [isEditingName, setIsEditingName] = useState(false);
   const [pendingName, setPendingName] = useState("");
   const [lastStatusTime, setLastStatusTime] = useState(Date.now());
@@ -26,6 +31,10 @@ export const useWebSocketChat = () => {
 
   useEffect(() => {
     usernameRef.current = username;
+    if (typeof window !== "undefined") {
+      localStorage.setItem("chat-username", username);
+      sessionStorage.setItem("chat-username", username);
+    }
   }, [username]);
 
   const sendIdentify = useCallback(

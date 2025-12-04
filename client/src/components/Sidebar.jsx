@@ -1,4 +1,9 @@
+import { useState } from "react";
+import Modal from "./Modal";
+
 const Sidebar = ({ participants = [] }) => {
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
   return (
     <aside
       className="w-64 h-full flex flex-col border-r"
@@ -11,12 +16,13 @@ const Sidebar = ({ participants = [] }) => {
       <div className="p-4 border-b" style={{ borderColor: "var(--border)" }}>
         <button
           type="button"
-          className="text-sm w-full px-4 py-2 rounded-full border transition-colors"
+          className="text-sm w-full px-4 py-2 rounded-full border transition-colors cursor-pointer"
           style={{
             borderColor: "var(--border)",
             color: "var(--text)",
             backgroundColor: "var(--bg)",
           }}
+          onClick={() => setIsModalOpen(true)}
         >
           Create account
         </button>
@@ -42,6 +48,18 @@ const Sidebar = ({ participants = [] }) => {
           ))}
         </div>
       </div>
+
+      <Modal
+        open={isModalOpen}
+        title="Create account"
+        actionLabel="Continue"
+        onAction={() => setIsModalOpen(false)}
+        onClose={() => setIsModalOpen(false)}
+      >
+        <p className="text-sm" style={{ color: "var(--muted)" }}>
+          Account creation will be available soon.
+        </p>
+      </Modal>
     </aside>
   );
 };

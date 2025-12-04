@@ -16,6 +16,7 @@ const Header = () => {
     isDark,
     toggleTheme,
     usernameInputRef,
+    setIsEditingName,
   } = useChat();
 
   return (
@@ -73,7 +74,7 @@ const Header = () => {
             onBlur={commitNameChange}
             onKeyDown={(e) => {
               if (e.key === "Enter") commitNameChange();
-              if (e.key === "Escape") startEditingName(false);
+              if (e.key === "Escape") setIsEditingName(false);
             }}
             className="border-b focus:outline-none"
             style={{

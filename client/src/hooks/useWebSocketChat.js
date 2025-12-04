@@ -22,6 +22,7 @@ export const useWebSocketChat = () => {
   const pingIntervalRef = useRef(null);
   const seenAckRef = useRef(new Set());
   const usernameRef = useRef(username);
+  const usernameInputRef = useRef(null);
 
   useEffect(() => {
     usernameRef.current = username;
@@ -330,5 +331,7 @@ export const useWebSocketChat = () => {
     deleteMessage,
     saveEdit,
     cancelEditing,
+    usernameInputRef,
+    setIsEditingName,
   };
 };

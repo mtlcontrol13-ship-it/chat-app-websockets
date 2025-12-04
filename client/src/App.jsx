@@ -6,7 +6,7 @@ import MessageList from "./components/MessageList";
 import MessageInput from "./components/MessageInput";
 
 const AppContent = () => {
-  const { username, isConnected, isDark, toggleTheme, messages } = useChat();
+  const { username, messages } = useChat();
 
   const participants = Array.from(
     new Set(
@@ -19,11 +19,7 @@ const AppContent = () => {
   return (
     <div className="flex h-screen" style={{ backgroundColor: "var(--bg)" }}>
       <Sidebar
-        username={username}
         participants={participants}
-        isConnected={isConnected}
-        isDark={isDark}
-        onToggleTheme={toggleTheme}
       />
       <div className="flex flex-col flex-1" style={{ color: "var(--text)" }}>
         <Header />

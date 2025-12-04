@@ -1,8 +1,18 @@
+import http from "http";
 import WebSocket from "ws";
 
-const wss = new WebSocket.Server({ port: 8080 }, () => {
-  console.log("WebSocket server started on ws://localhost:8080");
+const server = http.createServer((req, res) => {
+  // Optional: you can respond to health checks or simple HTTP
+  if (req.url === "/healthz") {
+    res.writeHead(200);
+    res.end("OK");
+  } else {
+    res.writeHead(404);
+    res.end();
+  }
 });
+
+const wss = new WebSocket.Server({ server });
 
 // Broadcast helper for all connected clients
 const broadcast = (data) => {
@@ -68,4 +78,8 @@ wss.on("connection", (ws) => {
       timestamp: Date.now(),
     });
   });
+});
+
+server.listen(8080, () => {
+  console.log("Server is listening on http://localhost:8080");
 });

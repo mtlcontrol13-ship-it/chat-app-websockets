@@ -7,16 +7,8 @@ import MessageList from "./components/MessageList";
 import MessageInput from "./components/MessageInput";
 
 const AppContent = () => {
-  const { username, messages } = useChat();
+  const { participants } = useChat();
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
-
-  const participants = Array.from(
-    new Set(
-      [username, ...messages.map((m) => m.username)].filter(
-        (u) => u && u !== "System"
-      )
-    )
-  );
 
   return (
     <div

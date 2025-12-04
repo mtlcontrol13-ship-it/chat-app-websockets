@@ -14,6 +14,7 @@ export const useWebSocketChat = () => {
       `User${Math.floor(Math.random() * 9000 + 1000)}`
     );
   });
+  const [participants, setParticipants] = useState([]);
   const [isEditingName, setIsEditingName] = useState(false);
   const [pendingName, setPendingName] = useState("");
   const [lastStatusTime, setLastStatusTime] = useState(Date.now());
@@ -35,6 +36,11 @@ export const useWebSocketChat = () => {
       localStorage.setItem("chat-username", username);
       sessionStorage.setItem("chat-username", username);
     }
+    setParticipants((prev) => {
+      const next = new Set(prev);
+      next.add(username);
+      return Array.from(next);
+    });
   }, [username]);
 
   const sendIdentify = useCallback(
@@ -112,6 +118,26 @@ export const useWebSocketChat = () => {
           if (msg.type === "delete" && msg.id) {
             setMessages((prev) => prev.filter((m) => m.id !== msg.id));
             return;
+          }
+
+          if (msg.type === "status" && typeof msg.text === "string") {
+            const text = msg.text;
+            if (text.includes(" joined the chat")) {
+              const name = text.replace(" joined the chat", "").trim();
+              if (name && name !== "System") {
+                setParticipants((prev) => Array.from(new Set([...prev, name])));
+              }
+            }
+            if (text.includes(" left the chat")) {
+              const name = text.replace(" left the chat", "").trim();
+              if (name) {
+                setParticipants((prev) => prev.filter((p) => p !== name));
+              }
+            }
+          }
+
+          if (msg.username && msg.username !== "System") {
+            setParticipants((prev) => Array.from(new Set([...prev, msg.username])));
           }
 
           const incomingId = msg.id || crypto.randomUUID();
@@ -305,6 +331,10 @@ export const useWebSocketChat = () => {
     const previousName = username;
     setUsername(nextName);
     usernameRef.current = nextName;
+    setParticipants((prev) => {
+      const filtered = prev.filter((p) => p !== previousName);
+      return Array.from(new Set([...filtered, nextName]));
+    });
     sendIdentify(nextName);
 
     if (isConnected && socketRef.current) {
@@ -342,5 +372,6 @@ export const useWebSocketChat = () => {
     cancelEditing,
     usernameInputRef,
     setIsEditingName,
+    participants,
   };
 };

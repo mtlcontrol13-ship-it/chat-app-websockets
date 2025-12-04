@@ -34,6 +34,11 @@ const Sidebar = ({ participants = [], isOpen = false, onClose = () => {} }) => {
     };
   };
 
+  const avatarUrl = (name) =>
+    `https://api.dicebear.com/7.x/bottts-neutral/svg?seed=${encodeURIComponent(
+      name
+    )}`;
+
   return (
     <>
       <aside
@@ -92,10 +97,17 @@ const Sidebar = ({ participants = [], isOpen = false, onClose = () => {} }) => {
                 }}
               >
                 <div
-                  className="w-10 h-10 rounded-full flex items-center justify-center text-sm font-semibold flex-shrink-0"
+                  className="w-10 h-10 rounded-full flex items-center justify-center text-sm font-semibold flex-shrink-0 relative overflow-hidden"
                   style={avatarStyle(contact.name)}
                 >
-                  {contact.name.slice(0, 2).toUpperCase()}
+                  <img
+                    src={avatarUrl(contact.name)}
+                    alt={`${contact.name} avatar`}
+                    className="absolute inset-0 w-full h-full object-cover"
+                    onError={(e) => {
+                      e.currentTarget.style.display = "none";
+                    }}
+                  />
                 </div>
 
                 <div className="flex-1 min-w-0">

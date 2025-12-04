@@ -1,4 +1,5 @@
 // App.jsx
+import { useState } from "react";
 import { ChatProvider, useChat } from "./context/ChatContext";
 import Sidebar from "./components/Sidebar";
 import Header from "./components/Header";
@@ -7,11 +8,8 @@ import MessageInput from "./components/MessageInput";
 
 const AppContent = () => {
   const { username, messages } = useChat();
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
-  /**
-   * Get unique participants from messages plus current username
-   * @returns {string[]}
-   */
   const participants = Array.from(
     new Set(
       [username, ...messages.map((m) => m.username)].filter(
@@ -21,10 +19,29 @@ const AppContent = () => {
   );
 
   return (
-    <div className="flex h-screen" style={{ backgroundColor: "var(--bg)" }}>
-      <Sidebar participants={participants} />
-      <div className="flex flex-col flex-1" style={{ color: "var(--text)" }}>
-        <Header />
+    <div
+      className="flex min-h-screen overflow-hidden"
+      style={{ backgroundColor: "var(--bg)" }}
+    >
+      {/* Mobile overlay */}
+      {isSidebarOpen && (
+        <div
+          className="fixed inset-0 z-30 bg-black/40 lg:hidden"
+          onClick={() => setIsSidebarOpen(false)}
+        />
+      )}
+
+      <Sidebar
+        participants={participants}
+        isOpen={isSidebarOpen}
+        onClose={() => setIsSidebarOpen(false)}
+      />
+
+      <div
+        className="flex flex-col flex-1 min-h-0"
+        style={{ color: "var(--text)" }}
+      >
+        <Header onToggleSidebar={() => setIsSidebarOpen((prev) => !prev)} />
         <MessageList />
         <MessageInput />
       </div>

@@ -1,8 +1,8 @@
-import { Circle } from "lucide-react";
+import { Circle, Menu } from "lucide-react";
 import { useChat } from "../context/ChatContext";
 import { formatTimeWithMs } from "../utils/time";
 
-const Header = () => {
+const Header = ({ onToggleSidebar = () => {} }) => {
   const {
     isConnected,
     lastStatusTime,
@@ -28,9 +28,19 @@ const Header = () => {
       }}
     >
       <div className="flex items-center justify-between gap-3">
-        <h1 className="text-2xl font-semibold" style={{ color: "var(--text)" }}>
-          Native WebSocket Chat
-        </h1>
+        <div className="flex items-center gap-3">
+          <button
+            type="button"
+            className="lg:hidden p-2 rounded-full border"
+            style={{ borderColor: "var(--border)", backgroundColor: "var(--bg)" }}
+            onClick={onToggleSidebar}
+          >
+            <Menu className="w-5 h-5" />
+          </button>
+          <h1 className="text-2xl font-semibold" style={{ color: "var(--text)" }}>
+            Native WebSocket Chat
+          </h1>
+        </div>
         <div className="flex items-center gap-3">
           <button
             type="button"
@@ -59,6 +69,7 @@ const Header = () => {
           </div>
         </div>
       </div>
+
       <p
         className="text-sm mt-1 cursor-pointer select-none"
         style={{ color: "var(--muted)" }}

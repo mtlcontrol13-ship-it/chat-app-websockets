@@ -1,6 +1,8 @@
 import http from "http";
 import { WebSocketServer } from "ws";
 
+const port = 8080;
+
 const server = http.createServer((req, res) => {
   // Optional: you can respond to health checks or simple HTTP
   if (req.url === "/healthz") {
@@ -80,6 +82,6 @@ wss.on("connection", (ws) => {
   });
 });
 
-server.listen(8080, () => {
-  console.log("Server is listening on http://localhost:8080");
+server.listen(port, "0.0.0.0", () => {
+  console.log(`Server listening on http://0.0.0.0:${port}`);
 });

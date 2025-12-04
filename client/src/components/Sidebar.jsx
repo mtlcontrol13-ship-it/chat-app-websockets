@@ -6,9 +6,9 @@ const Sidebar = ({ participants = [], isOpen = false, onClose = () => {} }) => {
 
   return (
     <aside
-      className={`h-full lg:h-screen flex flex-col border-r w-64 max-w-[80%] bg-[var(--panel)] text-[var(--text)] transition-transform transform z-40 overflow-y-auto ${
+      className={`h-full lg:h-screen flex flex-col border-r w-64 max-w-[80%] bg-(--panel) text-(--text) transition-transform transform z-40 overflow-y-auto ${
         isOpen ? "translate-x-0" : "-translate-x-full"
-      } fixed inset-y-0 left-0 lg:static lg:translate-x-0 lg:w-64 lg:max-w-none lg:relative`}
+      } fixed inset-y-0 left-0 lg:static lg:translate-x-0 lg:w-64 lg:max-w-none`}
       style={{ borderColor: "var(--border)" }}
     >
       <div className="p-4 border-b" style={{ borderColor: "var(--border)" }}>

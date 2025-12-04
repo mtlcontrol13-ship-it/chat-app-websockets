@@ -1,5 +1,5 @@
 import http from "http";
-import WebSocket from "ws";
+import { WebSocketServer } from "ws";
 
 const server = http.createServer((req, res) => {
   // Optional: you can respond to health checks or simple HTTP
@@ -12,7 +12,7 @@ const server = http.createServer((req, res) => {
   }
 });
 
-const wss = new WebSocket.Server({ server });
+const wss = new WebSocketServer({ server });
 
 // Broadcast helper for all connected clients
 const broadcast = (data) => {

@@ -1,7 +1,8 @@
 // App.jsx
-import { useState, useEffect, useRef } from "react";
-import { Send, Circle } from "lucide-react";
+import { useEffect, useRef, useState } from "react";
+import { Circle, Send } from "lucide-react";
 import ChatBubble from "./components/ChatBubble";
+import Sidebar from "./components/Sidebar";
 
 const WS_URL = "wss://fair-cecelia-mtl-97a3c19e.koyeb.app";
 
@@ -304,7 +305,12 @@ export default function App() {
     setMessages((prev) =>
       prev.map((m) =>
         m.id === editingId
-          ? { ...m, text: updatedText, edited: true, timestamp: payload.timestamp }
+          ? {
+              ...m,
+              text: updatedText,
+              edited: true,
+              timestamp: payload.timestamp,
+            }
           : m
       )
     );
@@ -340,39 +346,39 @@ export default function App() {
     }
   };
 
+  const participants = Array.from(
+    new Set(
+      [username, ...messages.map((m) => m.username)].filter(
+        (u) => u && u !== "System"
+      )
+    )
+  );
+
   return (
-    <div
-      className="flex flex-col h-screen"
-      style={{ backgroundColor: "var(--bg)", color: "var(--text)" }}
-    >
-      {/* Header */}
-      <header
-        className="px-6 py-4"
-        style={{
-          backgroundColor: "var(--panel)",
-          borderBottom: "1px solid var(--border)",
-        }}
-      >
-        <div className="flex items-center justify-between gap-3">
-          <h1
-            className="text-2xl font-semibold"
-            style={{ color: "var(--text)" }}
-          >
-            Native WebSocket Chat
-          </h1>
-          <div className="flex items-center gap-3">
-            <button
-              type="button"
-              onClick={() => setIsDark((d) => !d)}
-              className="px-3 py-1 text-sm rounded-full border transition-colors"
-              style={{
-                borderColor: "var(--border)",
-                color: "var(--text)",
-                backgroundColor: "var(--bg)",
-              }}
+    <div className="flex h-screen" style={{ backgroundColor: "var(--bg)" }}>
+      <Sidebar
+        username={username}
+        participants={participants}
+        isConnected={isConnected}
+        isDark={isDark}
+        onToggleTheme={() => setIsDark((d) => !d)}
+      />
+      <div className="flex flex-col flex-1" style={{ color: "var(--text)" }}>
+        {/* Header */}
+        <header
+          className="px-6 py-4"
+          style={{
+            backgroundColor: "var(--panel)",
+            borderBottom: "1px solid var(--border)",
+          }}
+        >
+          <div className="flex items-center justify-between gap-3">
+            <h1
+              className="text-2xl font-semibold"
+              style={{ color: "var(--text)" }}
             >
-              {isDark ? "Light mode" : "Dark mode"}
-            </button>
+              Native WebSocket Chat
+            </h1>
             <div className="flex items-center gap-2">
               <Circle
                 className="w-3 h-3 fill-current"
@@ -387,127 +393,127 @@ export default function App() {
               </span>
             </div>
           </div>
-        </div>
-        <p
-          className="text-sm mt-1 cursor-pointer select-none"
-          style={{ color: "var(--muted)" }}
-          onDoubleClick={startEditingName}
-          title="Double-click to change your display name"
-        >
-          Logged in as{" "}
-          {isEditingName ? (
-            <input
-              ref={usernameInputRef}
-              value={pendingName}
-              onChange={(e) => setPendingName(e.target.value)}
-              onBlur={commitNameChange}
-              onKeyDown={(e) => {
-                if (e.key === "Enter") commitNameChange();
-                if (e.key === "Escape") setIsEditingName(false);
-              }}
-              className="border-b focus:outline-none"
-              style={{
-                borderColor: "var(--border)",
-                color: "var(--text)",
-                backgroundColor: "transparent",
-              }}
-            />
-          ) : (
-            <span className="font-semibold" style={{ color: "var(--text)" }}>
-              {username}
-            </span>
-          )}
-        </p>
-      </header>
+          <p
+            className="text-sm mt-1 cursor-pointer select-none"
+            style={{ color: "var(--muted)" }}
+            onDoubleClick={startEditingName}
+            title="Double-click to change your display name"
+          >
+            Logged in as{" "}
+            {isEditingName ? (
+              <input
+                ref={usernameInputRef}
+                value={pendingName}
+                onChange={(e) => setPendingName(e.target.value)}
+                onBlur={commitNameChange}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter") commitNameChange();
+                  if (e.key === "Escape") setIsEditingName(false);
+                }}
+                className="border-b focus:outline-none"
+                style={{
+                  borderColor: "var(--border)",
+                  color: "var(--text)",
+                  backgroundColor: "transparent",
+                }}
+              />
+            ) : (
+              <span className="font-semibold" style={{ color: "var(--text)" }}>
+                {username}
+              </span>
+            )}
+          </p>
+        </header>
 
-      {/* Messages */}
-      <div
-        className="flex-1 overflow-y-auto px-4 py-6 space-y-4"
-        style={{ backgroundColor: "var(--bg)" }}
-      >
-        {messages.map((msg) => {
-          if (msg.type === "status") {
-            return (
-              <div key={msg.id} className="flex justify-center">
-                <div
-                  className="text-sm italic px-3 py-1 rounded-full"
-                  style={{
-                    color: "var(--status-text)",
-                    backgroundColor: "var(--status-bg)",
-                  }}
-                >
-                  {msg.text}
+        {/* Messages */}
+        <div
+          className="flex-1 overflow-y-auto px-4 py-6 space-y-4"
+          style={{ backgroundColor: "var(--bg)" }}
+        >
+          {messages.map((msg) => {
+            if (msg.type === "status") {
+              return (
+                <div key={msg.id} className="flex justify-center">
+                  <div
+                    className="text-sm italic px-3 py-1 rounded-full"
+                    style={{
+                      color: "var(--status-text)",
+                      backgroundColor: "var(--status-bg)",
+                    }}
+                  >
+                    {msg.text}
+                  </div>
                 </div>
+              );
+            }
+
+            const isOwn = msg.username === username;
+            const isEditing = editingId === msg.id && isOwn;
+            const time = new Date(msg.timestamp).toLocaleTimeString([], {
+              hour: "2-digit",
+              minute: "2-digit",
+            });
+
+            return (
+              <div
+                key={msg.id}
+                className={`flex ${isOwn ? "justify-end" : "justify-start"}`}
+              >
+                <ChatBubble
+                  text={isEditing ? editingText : msg.text}
+                  time={time}
+                  isOwn={isOwn}
+                  edited={msg.edited}
+                  seen={msg.seen}
+                  showActions={isOwn && !isEditing}
+                  isEditing={isEditing}
+                  editValue={editingText}
+                  onEditChange={setEditingText}
+                  onEditSave={saveEdit}
+                  onEditCancel={cancelEditing}
+                  onEdit={() => startEditingMessage(msg)}
+                  onDelete={() => deleteMessage(msg)}
+                />
               </div>
             );
-          }
-
-          const isOwn = msg.username === username;
-          const isEditing = editingId === msg.id && isOwn;
-          const time = new Date(msg.timestamp).toLocaleTimeString([], {
-            hour: "2-digit",
-            minute: "2-digit",
-          });
-
-          return (
-            <div
-              key={msg.id}
-              className={`flex ${isOwn ? "justify-end" : "justify-start"}`}
-            >
-              <ChatBubble
-                text={isEditing ? editingText : msg.text}
-                time={time}
-                isOwn={isOwn}
-                edited={msg.edited}
-                seen={msg.seen}
-                showActions={isOwn && !isEditing}
-                isEditing={isEditing}
-                editValue={editingText}
-                onEditChange={setEditingText}
-                onEditSave={saveEdit}
-                onEditCancel={cancelEditing}
-                onEdit={() => startEditingMessage(msg)}
-                onDelete={() => deleteMessage(msg)}
-              />
-            </div>
-          );
-        })}
-        <div ref={messagesEndRef} />
-      </div>
-
-      {/* Input */}
-      <form
-        onSubmit={sendMessage}
-        className="border-t p-4"
-        style={{
-          backgroundColor: "var(--panel)",
-          borderColor: "var(--border)",
-        }}
-      >
-        <div className="flex gap-3 max-w-4xl mx-auto">
-          <input
-            type="text"
-            value={input}
-            onChange={(e) => setInput(e.target.value)}
-            placeholder={isConnected ? "Type a message..." : "Connecting..."}
-            disabled={!isConnected}
-            className="flex-1 px-4 py-3 rounded-full focus:outline-none focus:ring-2 focus:ring-blue-500"
-            style={{
-              backgroundColor: "var(--input-bg)",
-              color: "var(--text)",
-              border: `1px solid var(--input-border)`,
-            }}
-            autoFocus
-          />
-          <button
-            type="submit"
-            disabled={!isConnected || !input.trim()}
-            className="bg-blue-600 hover:bg-blue-700 disabled:bg-gray-400 text-white p-3 rounded-full transition-colors focus:outline-none focus:ring-4 focus:ring-blue-300"
-          >
-            <Send className="w-6 h-6" />
-          </button>
+          })}
+          <div ref={messagesEndRef} />
         </div>
-      </form>
+
+        {/* Input */}
+        <form
+          onSubmit={sendMessage}
+          className="border-t p-4"
+          style={{
+            backgroundColor: "var(--panel)",
+            borderColor: "var(--border)",
+          }}
+        >
+          <div className="flex gap-3 max-w-4xl mx-auto">
+            <input
+              type="text"
+              value={input}
+              onChange={(e) => setInput(e.target.value)}
+              placeholder={isConnected ? "Type a message..." : "Connecting..."}
+              disabled={!isConnected}
+              className="flex-1 px-4 py-3 rounded-full focus:outline-none focus:ring-2 focus:ring-blue-500"
+              style={{
+                backgroundColor: "var(--input-bg)",
+                color: "var(--text)",
+                border: `1px solid var(--input-border)`,
+              }}
+              autoFocus
+            />
+            <button
+              type="submit"
+              disabled={!isConnected || !input.trim()}
+              className="bg-blue-600 hover:bg-blue-700 disabled:bg-gray-400 text-white p-3 rounded-full transition-colors focus:outline-none focus:ring-4 focus:ring-blue-300"
+            >
+              <Send className="w-6 h-6" />
+            </button>
+          </div>
+        </form>
+      </div>
     </div>
   );
 }

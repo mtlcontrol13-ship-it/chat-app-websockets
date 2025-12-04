@@ -1,12 +1,4 @@
-import { Circle } from "lucide-react";
-
-const Sidebar = ({
-  username,
-  participants = [],
-  isConnected = false,
-  isDark = false,
-  onToggleTheme,
-}) => {
+const Sidebar = ({ participants = [] }) => {
   return (
     <aside
       className="w-64 h-full flex flex-col border-r"
@@ -17,29 +9,17 @@ const Sidebar = ({
       }}
     >
       <div className="p-4 border-b" style={{ borderColor: "var(--border)" }}>
-        <div className="flex items-center gap-2">
-          <Circle
-            className="w-3 h-3 fill-current"
-            style={{ color: isConnected ? "#22c55e" : "#ef4444" }}
-          />
-          <div>
-            <p className="text-sm font-semibold">You</p>
-            <p className="text-xs" style={{ color: "var(--muted)" }}>
-              {username}
-            </p>
-          </div>
-        </div>
+        <p className="text-lg font-semibold">Native WebSocket Chat</p>
         <button
           type="button"
-          onClick={onToggleTheme}
-          className="mt-3 text-xs px-3 py-1 rounded-full border transition-colors"
+          className="mt-3 text-sm px-4 py-2 rounded-full border transition-colors"
           style={{
             borderColor: "var(--border)",
             color: "var(--text)",
             backgroundColor: "var(--bg)",
           }}
         >
-          {isDark ? "Light mode" : "Dark mode"}
+          Create account
         </button>
       </div>
 

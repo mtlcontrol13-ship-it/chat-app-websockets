@@ -1,15 +1,45 @@
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import Modal from "./Modal";
 
 const Sidebar = ({ participants = [], isOpen = false, onClose = () => {} }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const timestamp = useMemo(
+    () =>
+      new Intl.DateTimeFormat("en", {
+        hour: "numeric",
+        minute: "2-digit",
+      }).format(new Date()),
+    []
+  );
+
+  const contactList = useMemo(
+    () =>
+      participants.map((name) => ({
+        name,
+        lastMessage: "Tap to start chatting",
+        time: timestamp,
+      })),
+    [participants, timestamp]
+  );
+
+  const avatarStyle = (name) => {
+    const hash = Array.from(name).reduce(
+      (acc, char) => acc + char.charCodeAt(0),
+      0
+    );
+    const hue = hash % 360;
+    return {
+      backgroundColor: `hsl(${hue} 65% 45%)`,
+      color: "white",
+    };
+  };
 
   return (
     <>
       <aside
-        className={`h-full lg:h-screen flex flex-col border-r w-64 max-w-[80%] bg-[var(--panel)] text-[var(--text)] transition-transform transform z-40 overflow-y-auto ${
+        className={`h-full lg:h-screen flex flex-col border-r w-72 max-w-[80%] bg-[var(--panel)] text-[var(--text)] transition-transform transform z-40 overflow-y-auto ${
           isOpen ? "translate-x-0" : "-translate-x-full"
-        } fixed inset-y-0 left-0 lg:static lg:translate-x-0 lg:w-64 lg:max-w-none`}
+        } fixed inset-y-0 left-0 lg:static lg:translate-x-0 lg:w-72 lg:max-w-none`}
         style={{ borderColor: "var(--border)" }}
       >
         <div className="p-4 border-b" style={{ borderColor: "var(--border)" }}>
@@ -27,7 +57,21 @@ const Sidebar = ({ participants = [], isOpen = false, onClose = () => {} }) => {
           </button>
         </div>
 
-        <div className="p-4">
+        <div className="px-4 pt-2 pb-4 space-y-3">
+          <div>
+            <input
+              type="text"
+              placeholder="Search or start new chat"
+              className="w-full px-3 py-2 rounded-full text-sm outline-none transition border bg-[var(--bg)]"
+              style={{
+                borderColor: "var(--border)",
+                color: "var(--text)",
+              }}
+              onFocus={() => {}}
+              onChange={() => {}}
+            />
+          </div>
+
           <p
             className="text-xs font-semibold mb-2 flex items-center justify-between"
             style={{ color: "var(--muted)" }}
@@ -38,17 +82,41 @@ const Sidebar = ({ participants = [], isOpen = false, onClose = () => {} }) => {
             </span>
           </p>
           <div className="space-y-2 text-sm">
-            {participants.map((user) => (
+            {contactList.map((contact) => (
               <div
-                key={user}
-                className="flex items-center gap-2 px-2 py-1 rounded-md"
-                style={{ backgroundColor: "var(--bg)" }}
+                key={contact.name}
+                className="flex items-center gap-3 px-3 py-2 rounded-2xl border cursor-pointer transition hover:translate-x-1"
+                style={{
+                  backgroundColor: "var(--bg)",
+                  borderColor: "var(--border)",
+                }}
               >
                 <div
-                  className="w-2 h-2 rounded-full"
-                  style={{ backgroundColor: "#22c55e" }}
-                />
-                <span>{user}</span>
+                  className="w-10 h-10 rounded-full flex items-center justify-center text-sm font-semibold flex-shrink-0"
+                  style={avatarStyle(contact.name)}
+                >
+                  {contact.name.slice(0, 2).toUpperCase()}
+                </div>
+
+                <div className="flex-1 min-w-0">
+                  <div className="flex items-center justify-between gap-2">
+                    <p className="font-semibold truncate">{contact.name}</p>
+                    <span
+                      className="text-[11px] whitespace-nowrap"
+                      style={{ color: "var(--muted)" }}
+                    >
+                      {contact.time}
+                    </span>
+                  </div>
+                  <div className="flex items-center gap-1">
+                    <span
+                      className="text-xs text-ellipsis overflow-hidden whitespace-nowrap"
+                      style={{ color: "var(--muted)" }}
+                    >
+                      {contact.lastMessage}
+                    </span>
+                  </div>
+                </div>
               </div>
             ))}
           </div>

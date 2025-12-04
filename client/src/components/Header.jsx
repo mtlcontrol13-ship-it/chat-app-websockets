@@ -38,7 +38,7 @@ const Header = ({ onToggleSidebar = () => {} }) => {
             <Menu className="w-5 h-5" />
           </button>
           <h1 className="text-2xl font-semibold" style={{ color: "var(--text)" }}>
-            Native WebSocket Chat
+            Chat
           </h1>
         </div>
         <div className="flex items-center gap-3">

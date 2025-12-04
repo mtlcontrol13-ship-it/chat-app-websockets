@@ -3,7 +3,7 @@ import { useState, useEffect, useRef } from "react";
 import { Send, Circle } from "lucide-react";
 import ChatBubble from "./components/ChatBubble";
 
-const WS_URL = import.meta.env.VITE_WS_URL || "ws://localhost:8080";
+const WS_URL = "wss://fair-cecelia-mtl-97a3c19e.koyeb.app";
 
 export default function App() {
   const [messages, setMessages] = useState([]);

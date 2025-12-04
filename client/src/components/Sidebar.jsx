@@ -1,7 +1,7 @@
 import { useMemo, useState } from "react";
 import Modal from "./Modal";
 
-const Sidebar = ({ participants = [], isOpen = false, onClose = () => {} }) => {
+const Sidebar = ({ participants = [], isOpen = false }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const timestamp = useMemo(
     () =>
@@ -72,8 +72,6 @@ const Sidebar = ({ participants = [], isOpen = false, onClose = () => {} }) => {
                 borderColor: "var(--border)",
                 color: "var(--text)",
               }}
-              onFocus={() => {}}
-              onChange={() => {}}
             />
           </div>
 

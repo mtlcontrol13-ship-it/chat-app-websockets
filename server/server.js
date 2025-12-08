@@ -1,20 +1,22 @@
-import http from "http";
+import express from "express";
+import { createServer } from "http";
 import { WebSocketServer } from "ws";
 
 const port = 8080;
 
-const server = http.createServer((req, res) => {
-  // Optional: you can respond to health checks or simple HTTP
-  if (req.url === "/healthz") {
-    res.writeHead(200);
-    res.end("OK");
-  } else {
-    res.writeHead(404);
-    res.end();
-  }
+const app = express();
+const server = createServer(app);
+const wss = new WebSocketServer({ server });
+
+// Tiny health check endpoint
+app.get('/health', (req, res) => {
+  res.status(200).send('OK');
 });
 
-const wss = new WebSocketServer({ server });
+// 404 for all other HTTP requests
+app.use((req, res) => {
+  res.status(404).end();
+});
 
 // Broadcast helper for all connected clients
 const broadcast = (data) => {

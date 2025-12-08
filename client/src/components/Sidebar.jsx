@@ -137,13 +137,12 @@ const Sidebar = ({ participants = [], isOpen = false }) => {
         open={isModalOpen}
         title="Create account"
         actionLabel="Continue"
-        onAction={() => setIsModalOpen(false)}
+        onAction={(data) => {
+          console.log("Create account data:", data);
+          setIsModalOpen(false);
+        }}
         onClose={() => setIsModalOpen(false)}
-      >
-        <p className="text-sm" style={{ color: "var(--muted)" }}>
-          Account creation will be available soon.
-        </p>
-      </Modal>
+      />
     </>
   );
 };

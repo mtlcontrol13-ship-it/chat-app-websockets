@@ -1,3 +1,4 @@
+import { useId, useState } from "react";
 import { X } from "lucide-react";
 
 const Modal = ({
@@ -9,6 +10,16 @@ const Modal = ({
   onClose = () => {},
 }) => {
   if (!open) return null;
+
+  const formId = useId();
+  const [username, setUsername] = useState("");
+  const [email, setEmail] = useState("");
+  const hasCustomBody = Boolean(children);
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    onAction({ username, email });
+  };
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center">
@@ -28,7 +39,48 @@ const Modal = ({
             <X className="w-5 h-5" />
           </button>
         </div>
-        <div className="mb-4">{children}</div>
+        <div className="mb-4">
+          {hasCustomBody ? (
+            children
+          ) : (
+            <form id={formId} className="space-y-3" onSubmit={handleSubmit}>
+              <div className="flex flex-col gap-1">
+                <label className="text-sm" htmlFor={`${formId}-username`}>
+                  Username
+                </label>
+                <input
+                  id={`${formId}-username`}
+                  type="text"
+                  className="w-full px-3 py-2 rounded-lg border bg-[var(--bg)] outline-none"
+                  style={{
+                    borderColor: "var(--border)",
+                    color: "var(--text)",
+                  }}
+                  value={username}
+                  onChange={(e) => setUsername(e.target.value)}
+                  required
+                />
+              </div>
+              <div className="flex flex-col gap-1">
+                <label className="text-sm" htmlFor={`${formId}-email`}>
+                  Email
+                </label>
+                <input
+                  id={`${formId}-email`}
+                  type="email"
+                  className="w-full px-3 py-2 rounded-lg border bg-[var(--bg)] outline-none"
+                  style={{
+                    borderColor: "var(--border)",
+                    color: "var(--text)",
+                  }}
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  required
+                />
+              </div>
+            </form>
+          )}
+        </div>
         <div className="flex justify-end gap-2">
           <button
             type="button"
@@ -43,9 +95,10 @@ const Modal = ({
             Cancel
           </button>
           <button
-            type="button"
+            type={hasCustomBody ? "button" : "submit"}
+            form={hasCustomBody ? undefined : formId}
             className="px-4 py-2 rounded-full bg-blue-600 text-white cursor-pointer"
-            onClick={onAction}
+            onClick={hasCustomBody ? onAction : undefined}
           >
             {actionLabel}
           </button>

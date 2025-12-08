@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState, useCallback } from "react";
 
-const WS_URL = "wss://fair-cecelia-mtl-97a3c19e.koyeb.app";
+const WS_URL = import.meta.env.VITE_WS_URL;
 
 export const useWebSocketChat = () => {
   const [messages, setMessages] = useState([]);

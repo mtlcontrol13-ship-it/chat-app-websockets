@@ -12,12 +12,11 @@ const Modal = ({
   if (!open) return null;
 
   const formId = useId();
-  const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    onAction({ username, email });
+    onAction({ email });
   };
 
   return (
@@ -42,32 +41,15 @@ const Modal = ({
           {children ?? (
             <form id={formId} className="space-y-3" onSubmit={handleSubmit}>
               <div className="flex flex-col gap-1">
-                <label className="text-sm" htmlFor={`${formId}-username`}>
-                  Username
-                </label>
-                <input
-                  id={`${formId}-username`}
-                  type="text"
-                  className="w-full px-3 py-2 rounded-lg border bg-[var(--bg)] outline-none"
-                  style={{
-                    borderColor: "var(--border)",
-                    color: "var(--text)",
-                  }}
-                  value={username}
-                  onChange={(e) => setUsername(e.target.value)}
-                  required
-                />
-              </div>
-              <div className="flex flex-col gap-1">
                 <label className="text-sm" htmlFor={`${formId}-email`}>
                   Email
                 </label>
-            <input
-              id={`${formId}-email`}
-              type="email"
-              className="w-full px-3 py-2 rounded-lg border bg-[var(--bg)] outline-none"
-              style={{
-                borderColor: "var(--border)",
+                <input
+                  id={`${formId}-email`}
+                  type="email"
+                  className="w-full px-3 py-2 rounded-lg border bg-[var(--bg)] outline-none"
+                  style={{
+                    borderColor: "var(--border)",
                     color: "var(--text)",
                   }}
                   value={email}

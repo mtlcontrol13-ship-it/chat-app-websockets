@@ -5,14 +5,17 @@
   "type": "module",
   "scripts": {
     "dev": "bun --watch server.js",
-    "start": "node server.js"
+    "start": "node server.js",
+    "seed": "bun scripts/seed.js"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "description": "A simple WebSocket server using native WebSocket API in Node.js without any external libraries",
   "dependencies": {
+    "dotenv": "^17.2.3",
     "express": "^5.2.1",
+    "mongoose": "^9.0.1",
     "ws": "^8.18.3"
   },
   "devDependencies": {

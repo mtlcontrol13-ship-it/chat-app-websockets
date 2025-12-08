@@ -4,7 +4,7 @@ import { X } from "lucide-react";
 const Modal = ({
   open = false,
   title = "Modal",
-  children = null,
+  children,
   actionLabel = "OK",
   onAction = () => {},
   onClose = () => {},
@@ -14,7 +14,6 @@ const Modal = ({
   const formId = useId();
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
-  const hasCustomBody = Boolean(children);
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -40,9 +39,7 @@ const Modal = ({
           </button>
         </div>
         <div className="mb-4">
-          {hasCustomBody ? (
-            children
-          ) : (
+          {children ?? (
             <form id={formId} className="space-y-3" onSubmit={handleSubmit}>
               <div className="flex flex-col gap-1">
                 <label className="text-sm" htmlFor={`${formId}-username`}>
@@ -65,12 +62,12 @@ const Modal = ({
                 <label className="text-sm" htmlFor={`${formId}-email`}>
                   Email
                 </label>
-                <input
-                  id={`${formId}-email`}
-                  type="email"
-                  className="w-full px-3 py-2 rounded-lg border bg-[var(--bg)] outline-none"
-                  style={{
-                    borderColor: "var(--border)",
+            <input
+              id={`${formId}-email`}
+              type="email"
+              className="w-full px-3 py-2 rounded-lg border bg-[var(--bg)] outline-none"
+              style={{
+                borderColor: "var(--border)",
                     color: "var(--text)",
                   }}
                   value={email}
@@ -95,10 +92,10 @@ const Modal = ({
             Cancel
           </button>
           <button
-            type={hasCustomBody ? "button" : "submit"}
-            form={hasCustomBody ? undefined : formId}
+            type={children ? "button" : "submit"}
+            form={children ? undefined : formId}
             className="px-4 py-2 rounded-full bg-blue-600 text-white cursor-pointer"
-            onClick={hasCustomBody ? onAction : undefined}
+            onClick={children ? onAction : undefined}
           >
             {actionLabel}
           </button>

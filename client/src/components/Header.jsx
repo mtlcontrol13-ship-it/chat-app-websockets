@@ -22,7 +22,7 @@ const Header = ({ onToggleSidebar = () => {} }) => {
 
   return (
     <header
-      className="px-6 py-4"
+      className="px-6 py-3.5"
       style={{
         backgroundColor: "var(--panel)",
         borderBottom: "1px solid var(--border)",

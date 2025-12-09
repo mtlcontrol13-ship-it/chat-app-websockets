@@ -50,7 +50,7 @@ const Sidebar = ({ participants = [], isOpen = false }) => {
         } fixed inset-y-0 left-0 lg:static lg:translate-x-0 lg:w-72 lg:max-w-none`}
         style={{ borderColor: "var(--border)" }}
       >
-        <div className="px-6 py-7 border-b flex flex-col justify-center" style={{ borderColor: "var(--border)" }}>
+        <div className="px-6 py-6 border-b flex flex-col justify-center" style={{ borderColor: "var(--border)" }}>
           <h2 className="text-3xl font-bold" style={{ color: "var(--text)" }}>Messages</h2>
         </div>
 

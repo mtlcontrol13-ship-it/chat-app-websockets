@@ -25,8 +25,7 @@ const AppContent = () => {
 
   return (
     <div
-      className="flex min-h-screen overflow-hidden"
-      style={{ backgroundColor: "var(--bg)" }}
+      className="flex h-screen overflow-hidden bg-[var(--bg)]"
     >
       {/* Mobile overlay */}
       {isSidebarOpen && (
@@ -43,8 +42,7 @@ const AppContent = () => {
       />
 
       <div
-        className="flex flex-col flex-1 min-h-0"
-        style={{ color: "var(--text)" }}
+        className="flex flex-col flex-1 min-h-0 text-(--text)"
       >
         <Header onToggleSidebar={() => setIsSidebarOpen((prev) => !prev)} />
         <MessageList />

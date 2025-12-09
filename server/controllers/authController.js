@@ -16,7 +16,15 @@ export const loginUser = async (req, res) => {
             return res.status(404).json({ message: "User not found" });
         }
 
-        res.status(200).json({ message: "User logged in successfully" });
+        res.status(200).json({ 
+            message: "User logged in successfully",
+            user: {
+                id: existingUser._id,
+                email: existingUser.email,
+                userName: existingUser.userName,
+                role: existingUser.role
+            }
+        });
     } catch (error) {
         res.status(500).json({ message: "Error logging in user", error: error.message });
     }

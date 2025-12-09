@@ -135,8 +135,8 @@ const Sidebar = ({ participants = [], isOpen = false }) => {
 
       <Modal
         open={isModalOpen}
-        title="Create account"
-        actionLabel="Continue"
+        title="Login"
+        actionLabel="Login"
         onAction={(data) => {
           console.log("Create account data:", data);
           setIsModalOpen(false);

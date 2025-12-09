@@ -184,9 +184,9 @@ const ChatBubble = ({
               {isOwn && (
                 <span title={seen ? "Seen" : "Delivered"}>
                   {seen ? (
-                    <CheckCheck className="w-3.5 h-3.5 text-blue-600" />
+                    <CheckCheck className="w-3.5 h-3.5 text-white" />
                   ) : (
-                    <Check className="w-3.5 h-3.5" />
+                    <Check className="w-3.5 h-3.5 text-white" />
                   )}
                 </span>
               )}

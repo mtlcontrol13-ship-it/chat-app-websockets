@@ -1,4 +1,4 @@
-import { Circle, Menu, LogOut } from "lucide-react";
+import { Circle, Menu } from "lucide-react";
 import { useChat } from "../context/ChatContext";
 import { formatTimeWithMs } from "../utils/time";
 
@@ -18,7 +18,6 @@ const Header = ({ onToggleSidebar = () => {} }) => {
     usernameInputRef,
     setIsEditingName,
     user,
-    logout,
   } = useChat();
 
   return (
@@ -69,20 +68,6 @@ const Header = ({ onToggleSidebar = () => {} }) => {
               )}
             </span>
           </div>
-          {user && (
-            <button
-              type="button"
-              onClick={logout}
-              className="p-2 rounded-full border hover:bg-red-500/10 transition-colors"
-              title={`Logout (${user.role})`}
-              style={{
-                borderColor: "var(--border)",
-                color: "var(--text)",
-              }}
-            >
-              <LogOut className="w-5 h-5" />
-            </button>
-          )}
         </div>
       </div>
 

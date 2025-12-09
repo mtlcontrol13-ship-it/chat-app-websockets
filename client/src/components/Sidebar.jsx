@@ -45,20 +45,20 @@ const Sidebar = ({ participants = [], isOpen = false }) => {
   return (
     <>
       <aside
-        className={`h-full lg:h-screen flex flex-col border-r w-72 max-w-[80%] bg-[var(--panel)] text-[var(--text)] transition-transform transform z-40 overflow-y-auto border-[var(--border)] ${
+        className={`h-full lg:h-screen flex flex-col border-r w-72 max-w-[80%] bg-(--panel) text-(--text) transition-transform transform z-40 overflow-y-auto border-(--border) ${
           isOpen ? "translate-x-0" : "-translate-x-full"
         } fixed inset-y-0 left-0 lg:static lg:translate-x-0 lg:w-72 lg:max-w-none`}
       >
-        <div className="px-6 py-6 border-b border-[var(--border)] flex flex-col justify-center">
-          <h2 className="text-3xl font-bold text-[var(--text)]">Messages</h2>
+        <div className="px-6 py-6 border-b border-(--border) flex flex-col justify-center">
+          <h2 className="text-3xl font-bold text-(--text)">Messages</h2>
         </div>
 
         <div className="px-4 pt-2 pb-4 space-y-3 flex-1">
           <p
-            className="text-xs font-semibold mb-2 flex items-center justify-between text-[var(--muted)]"
+            className="text-xs font-semibold mb-2 flex items-center justify-between text-(--muted)"
           >
             <span>Participants</span>
-            <span className="text-[11px] text-[var(--muted)]">
+            <span className="text-[11px] text-(--muted)">
               {participants.length}
             </span>
           </p>
@@ -66,10 +66,10 @@ const Sidebar = ({ participants = [], isOpen = false }) => {
             {contactList.map((contact) => (
               <div
                 key={contact.name}
-                className="flex items-center gap-3 px-3 py-2 rounded-2xl border bg-[var(--bg)] border-[var(--border)] cursor-pointer transition hover:translate-x-1"
+                className="flex items-center gap-3 px-3 py-2 rounded-2xl border bg-(--bg) border-(--border) cursor-pointer transition hover:translate-x-1"
               >
                 <div
-                  className="w-10 h-10 rounded-full flex items-center justify-center text-sm font-semibold flex-shrink-0 relative overflow-hidden"
+                  className="w-10 h-10 rounded-full flex items-center justify-center text-sm font-semibold shrink-0 relative overflow-hidden"
                   style={avatarStyle(contact.name)}
                 >
                   <img
@@ -86,14 +86,14 @@ const Sidebar = ({ participants = [], isOpen = false }) => {
                   <div className="flex items-center justify-between gap-2">
                     <p className="font-semibold truncate">{contact.name}</p>
                     <span
-                      className="text-[11px] whitespace-nowrap text-[var(--muted)]"
+                      className="text-[11px] whitespace-nowrap text-(--muted)"
                     >
                       {contact.time}
                     </span>
                   </div>
                   <div className="flex items-center gap-1">
                     <span
-                      className="text-xs text-ellipsis overflow-hidden whitespace-nowrap text-[var(--muted)]"
+                      className="text-xs text-ellipsis overflow-hidden whitespace-nowrap text-(--muted)"
                     >
                       {contact.lastMessage}
                     </span>
@@ -104,14 +104,14 @@ const Sidebar = ({ participants = [], isOpen = false }) => {
           </div>
         </div>
 
-        <div className="p-4 border-t border-[var(--border)] space-y-3">
+        <div className="p-4 border-t border-(--border) space-y-3">
           {user ? (
             <>
-              <div className="px-4 py-3 rounded-lg border bg-[var(--bg)] border-[var(--border)]">
+              <div className="px-4 py-3 rounded-lg border bg-(--bg) border-(--border)">
                 <div className="flex items-center justify-between mb-2">
                   <div className="flex items-center gap-2">
                     <User className="w-4 h-4" />
-                    <span className="text-xs font-semibold text-[var(--muted)]">
+                    <span className="text-xs font-semibold text-(--muted)">
                       Account
                     </span>
                   </div>
@@ -122,14 +122,14 @@ const Sidebar = ({ participants = [], isOpen = false }) => {
                   </span>
                 </div>
                 <p className="text-sm font-semibold truncate">{user.userName}</p>
-                <p className="text-xs text-[var(--muted)]">
+                <p className="text-xs text-(--muted)">
                   {user.email}
                 </p>
               </div>
               <button
                 type="button"
                 onClick={logout}
-                className="text-sm w-full px-4 py-2 rounded-full border border-[var(--border)] bg-[var(--bg)] transition-colors cursor-pointer flex items-center justify-center gap-2 hover:bg-red-500/10"
+                className="text-sm w-full px-4 py-2 rounded-full border border-(--border) bg-(--bg) transition-colors cursor-pointer flex items-center justify-center gap-2 hover:bg-red-500/10"
               >
                 <LogOut className="w-4 h-4" />
                 Logout
@@ -138,7 +138,7 @@ const Sidebar = ({ participants = [], isOpen = false }) => {
           ) : (
             <button
               type="button"
-              className="text-sm w-full px-4 py-2 rounded-full border border-[var(--border)] bg-[var(--bg)] transition-colors cursor-pointer"
+              className="text-sm w-full px-4 py-2 rounded-full border border-(--border) bg-(--bg) transition-colors cursor-pointer"
               onClick={() => setIsModalOpen(true)}
             >
               Login to Account

@@ -49,7 +49,7 @@ const ChatBubble = ({
               type="button"
               aria-label="Message actions"
               className={`absolute top-1/2 -translate-y-1/2 p-1 rounded-full transition-colors cursor-pointer ${
-                isOwn ? "right-[calc(100%_+_4px)]" : "left-[calc(100%_+_4px)]"
+                isOwn ? "right-[calc(100%+4px)]" : "left-[calc(100%+4px)]"
               }`}
               style={{
                 opacity: isHovered || isMenuOpen ? 1 : 0.6,
@@ -64,8 +64,8 @@ const ChatBubble = ({
 
             {isMenuOpen && (
               <div
-                className={`absolute top-0 flex flex-col min-w-[140px] rounded-xl border shadow-lg text-sm overflow-hidden border-[var(--border)] text-[var(--text)] bg-[var(--panel)] ${
-                  isOwn ? "right-[calc(100%_+_8px)]" : "left-[calc(100%_+_8px)]"
+                className={`absolute top-0 flex flex-col min-w-[140px] rounded-xl border shadow-lg text-sm overflow-hidden border-(--border) text-(--text) bg-(--panel) ${
+                  isOwn ? "right-[calc(100%+8px)]" : "left-[calc(100%+8px)]"
                 }`}
               >
                 <button
@@ -112,7 +112,7 @@ const ChatBubble = ({
         {isEditing ? (
           <div className="flex flex-col gap-2">
             <textarea
-              className="w-full rounded-md border px-2 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-400 border-[var(--border)]"
+              className="w-full rounded-md border px-2 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-400 border-(--border)"
               style={{
                 backgroundColor: "transparent",
                 color: bubbleTextColor,
@@ -126,7 +126,7 @@ const ChatBubble = ({
             <div className="flex gap-2 justify-end text-xs">
               <button
                 type="button"
-                className="px-3 py-1 rounded-full border border-[var(--border)] bg-transparent transition-colors"
+                className="px-3 py-1 rounded-full border border-(--border) bg-transparent transition-colors"
                 style={{
                   color: bubbleTextColor,
                 }}

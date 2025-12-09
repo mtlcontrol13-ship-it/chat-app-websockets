@@ -64,13 +64,13 @@ const ChatBubble = ({
 
             {isMenuOpen && (
               <div
-                className={`absolute top-0 flex flex-col min-w-[140px] rounded-xl border shadow-lg text-sm overflow-hidden border-(--border) text-(--text) bg-(--panel) ${
+                className={`absolute top-0 flex flex-col min-w-[140px] rounded-xl border shadow-lg text-sm overflow-hidden border-[var(--border)] text-[var(--text)] bg-[var(--panel)] ${
                   isOwn ? "right-[calc(100%+8px)]" : "left-[calc(100%+8px)]"
                 }`}
               >
                 <button
                   type="button"
-                  className="text-left px-4 py-2 hover:bg-blue-50 transition-colors cursor-pointer bg-transparent"
+                  className="text-left px-4 py-2 hover:bg-blue-600/20 transition-colors cursor-pointer bg-transparent"
                   onClick={(e) => {
                     e.stopPropagation();
                     navigator.clipboard.writeText(text);
@@ -82,7 +82,7 @@ const ChatBubble = ({
                 </button>
                 <button
                   type="button"
-                  className="text-left px-4 py-2 hover:bg-blue-50 transition-colors cursor-pointer bg-transparent"
+                  className="text-left px-4 py-2 hover:bg-blue-600/20 transition-colors cursor-pointer bg-transparent"
                   onClick={(e) => {
                     e.stopPropagation();
                     setIsMenuOpen(false);
@@ -94,7 +94,7 @@ const ChatBubble = ({
                 </button>
                 <button
                   type="button"
-                  className="text-left px-4 py-2 hover:bg-red-50 text-red-500 transition-colors cursor-pointer bg-transparent"
+                  className="text-left px-4 py-2 hover:bg-red-500/20 text-red-500 transition-colors cursor-pointer bg-transparent"
                   onClick={(e) => {
                     e.stopPropagation();
                     setIsMenuOpen(false);

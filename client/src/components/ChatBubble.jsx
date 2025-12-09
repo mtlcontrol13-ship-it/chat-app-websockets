@@ -1,4 +1,4 @@
-import { CopyIcon, Edit, EllipsisVertical, Trash, Trash2 } from "lucide-react";
+import { CopyIcon, Edit, EllipsisVertical, Trash2, Check, CheckCheck } from "lucide-react";
 import { useState } from "react";
 
 const ChatBubble = ({
@@ -18,13 +18,24 @@ const ChatBubble = ({
 }) => {
   const [isHovered, setIsHovered] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [copied, setCopied] = useState(false);
+  
   const handleEdit = onEdit ?? (() => {});
   const handleDelete = onDelete ?? (() => {});
   const handleEditChange = onEditChange ?? (() => {});
   const handleEditSave = onEditSave ?? (() => {});
   const handleEditCancel = onEditCancel ?? (() => {});
+  
   const bubbleTextColor = isOwn ? "#0f172a" : "#0f172a";
   const bubbleMutedColor = isOwn ? "#1f2937" : "#475569";
+
+  const handleCopy = (e) => {
+    e.stopPropagation();
+    navigator.clipboard.writeText(text);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
+    setIsMenuOpen(false);
+  };
 
   return (
     <div
@@ -37,9 +48,12 @@ const ChatBubble = ({
     >
       <div
         className={`
-          relative max-w-[75%] px-3 py-2 text-sm shadow-sm
-          rounded-2xl text-[#0f172a]
-          ${isOwn ? "bg-[#dcf8c6] rounded-br-sm" : "bg-white rounded-bl-sm"}
+          relative max-w-[75%] px-4 py-2 text-sm shadow-md
+          rounded-2xl text-[#0f172a] transition-all duration-200
+          ${isOwn 
+            ? "bg-[#dcf8c6] rounded-br-sm hover:shadow-lg" 
+            : "bg-white rounded-bl-sm hover:shadow-lg"
+          }
         `}
       >
         {/* Message actions */}
@@ -48,61 +62,63 @@ const ChatBubble = ({
             <button
               type="button"
               aria-label="Message actions"
-              className={`absolute top-1/2 -translate-y-1/2 p-1 rounded-full transition-colors cursor-pointer ${
-                isOwn ? "right-[calc(100%+4px)]" : "left-[calc(100%+4px)]"
-              }`}
-              style={{
-                opacity: isHovered || isMenuOpen ? 1 : 0.6,
-              }}
+              className={`absolute top-1/2 -translate-y-1/2 p-2 rounded-full transition-all cursor-pointer ${
+                isOwn ? "right-[calc(100%+8px)]" : "left-[calc(100%+8px)]"
+              } opacity-100 hover:bg-gray-300/50`}
               onClick={(e) => {
                 e.stopPropagation();
                 setIsMenuOpen((prev) => !prev);
               }}
             >
-              <EllipsisVertical className="w-5 h-5 text-white" />
+              <EllipsisVertical className="w-5 h-5 text-[var(--muted)]" />
             </button>
 
             {isMenuOpen && (
               <div
-                className={`absolute top-0 flex flex-col min-w-[140px] rounded-xl border shadow-lg text-sm overflow-hidden border-[var(--border)] text-[var(--text)] bg-[var(--panel)] ${
-                  isOwn ? "right-[calc(100%+8px)]" : "left-[calc(100%+8px)]"
+                className={`absolute top-0 flex flex-col min-w-[150px] rounded-lg border shadow-xl text-sm overflow-hidden border-[var(--border)] text-[var(--text)] bg-[var(--panel)] z-50 ${
+                  isOwn ? "right-[calc(100%+12px)]" : "left-[calc(100%+12px)]"
                 }`}
               >
                 <button
                   type="button"
-                  className="text-left px-4 py-2 hover:bg-blue-600/20 transition-colors cursor-pointer bg-transparent"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    navigator.clipboard.writeText(text);
-                    setIsMenuOpen(false);
-                  }}
+                  className="text-left px-4 py-2.5 hover:bg-blue-600/20 transition-colors cursor-pointer bg-transparent flex items-center gap-2 border-b border-[var(--border)]"
+                  onClick={handleCopy}
                 >
-                  <CopyIcon className="inline-block w-4 h-4 mr-2" />
-                  Copy
+                  {copied ? (
+                    <>
+                      <Check className="w-4 h-4 text-green-600" />
+                      <span className="text-green-600 font-medium">Copied</span>
+                    </>
+                  ) : (
+                    <>
+                      <CopyIcon className="w-4 h-4" />
+                      <span>Copy</span>
+                    </>
+                  )}
                 </button>
                 <button
                   type="button"
-                  className="text-left px-4 py-2 hover:bg-blue-600/20 transition-colors cursor-pointer bg-transparent"
+                  className="text-left px-4 py-2.5 hover:bg-blue-600/20 transition-colors cursor-pointer bg-transparent flex items-center gap-2 border-b border-[var(--border)]"
                   onClick={(e) => {
                     e.stopPropagation();
                     setIsMenuOpen(false);
                     handleEdit();
                   }}
                 >
-                  <Edit className="inline-block w-4 h-4 mr-2" />
-                  Edit
+                  <Edit className="w-4 h-4" />
+                  <span>Edit</span>
                 </button>
                 <button
                   type="button"
-                  className="text-left px-4 py-2 hover:bg-red-500/20 text-red-500 transition-colors cursor-pointer bg-transparent"
+                  className="text-left px-4 py-2.5 hover:bg-red-500/20 text-red-500 transition-colors cursor-pointer bg-transparent flex items-center gap-2"
                   onClick={(e) => {
                     e.stopPropagation();
                     setIsMenuOpen(false);
                     handleDelete();
                   }}
                 >
-                  <Trash2 className="inline-block w-4 h-4 mr-2" />
-                  Delete
+                  <Trash2 className="w-4 h-4" />
+                  <span>Delete</span>
                 </button>
               </div>
             )}
@@ -110,11 +126,10 @@ const ChatBubble = ({
         )}
 
         {isEditing ? (
-          <div className="flex flex-col gap-2">
+          <div className="flex flex-col gap-3">
             <textarea
-              className="w-full rounded-md border px-2 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-400 border-(--border)"
+              className="w-full rounded-lg border px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 border-[var(--border)] bg-[var(--input-bg)]"
               style={{
-                backgroundColor: "transparent",
                 color: bubbleTextColor,
                 caretColor: bubbleTextColor,
                 minHeight: "96px",
@@ -122,11 +137,12 @@ const ChatBubble = ({
               value={editValue}
               onChange={(e) => handleEditChange(e.target.value)}
               rows={3}
+              autoFocus
             />
             <div className="flex gap-2 justify-end text-xs">
               <button
                 type="button"
-                className="px-3 py-1 rounded-full border border-(--border) bg-transparent transition-colors"
+                className="px-4 py-1.5 rounded-full border border-[var(--border)] bg-transparent hover:bg-gray-300/20 transition-colors font-medium"
                 style={{
                   color: bubbleTextColor,
                 }}
@@ -139,7 +155,7 @@ const ChatBubble = ({
               </button>
               <button
                 type="button"
-                className="px-3 py-1 rounded-full bg-blue-600 text-white hover:bg-blue-700 transition-colors"
+                className="px-4 py-1.5 rounded-full bg-blue-600 text-white hover:bg-blue-700 transition-colors font-medium"
                 onClick={(e) => {
                   e.stopPropagation();
                   handleEditSave();
@@ -153,39 +169,29 @@ const ChatBubble = ({
           <>
             {/* Message text */}
             <p
-              className="whitespace-pre-line wrap-break-word pr-10"
+              className="whitespace-pre-line break-words pr-10 leading-relaxed"
               style={{ color: bubbleTextColor }}
             >
               {text}
             </p>
 
-            {/* Time + ticks */}
+            {/* Time + ticks + edited badge */}
             <div
-              className="mt-1 flex items-center justify-end gap-1 text-[0.65rem]"
+              className="mt-2 flex items-center justify-end gap-1.5 text-[0.7rem]"
               style={{ color: bubbleMutedColor }}
             >
-              <span>{time}</span>
-              {edited && <span className="ml-1 italic">(edited)</span>}
+              {edited && (
+                <span className="italic text-[0.65rem] opacity-80">(edited)</span>
+              )}
+              <span className="font-medium">{time}</span>
               {isOwn && (
-                <svg
-                  viewBox="0 0 16 15"
-                  className="h-3 w-3"
-                  aria-hidden="true"
-                  style={{ color: seen ? "#2563eb" : bubbleMutedColor }}
-                >
-                  <path
-                    d="M1 8.5 4.5 12.5 11 1"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="1.3"
-                  />
-                  <path
-                    d="M5.5 8.5 9 12.5 15 1"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="1.3"
-                  />
-                </svg>
+                <span title={seen ? "Seen" : "Delivered"}>
+                  {seen ? (
+                    <CheckCheck className="w-3.5 h-3.5 text-blue-600" />
+                  ) : (
+                    <Check className="w-3.5 h-3.5" />
+                  )}
+                </span>
               )}
             </div>
           </>

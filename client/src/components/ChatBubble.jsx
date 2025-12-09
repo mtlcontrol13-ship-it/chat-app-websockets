@@ -74,18 +74,18 @@ const ChatBubble = ({
                 setIsMenuOpen((prev) => !prev);
               }}
             >
-              <EllipsisVertical className="w-5 h-5 text-[var(--muted)]" />
+              <EllipsisVertical className="w-5 h-5 text-(--muted)" />
             </button>
 
             {isMenuOpen && (
               <div
-                className={`absolute top-0 flex flex-col min-w-[150px] rounded-lg border shadow-xl text-sm overflow-hidden border-[var(--border)] text-[var(--text)] bg-[var(--panel)] z-50 ${
+                className={`absolute top-0 flex flex-col min-w-[150px] rounded-lg border shadow-xl text-sm overflow-hidden border-(--border) text-(--text) bg-(--panel) z-50 ${
                   isOwn ? "right-[calc(100%+12px)]" : "left-[calc(100%+12px)]"
                 }`}
               >
                 <button
                   type="button"
-                  className="text-left px-4 py-2.5 hover:bg-blue-600/20 transition-colors cursor-pointer bg-transparent flex items-center gap-2 border-b border-[var(--border)]"
+                  className="text-left px-4 py-2.5 hover:bg-blue-600/20 transition-colors cursor-pointer bg-transparent flex items-center gap-2 border-b border-(--border)"
                   onClick={handleCopy}
                 >
                   {copied ? (
@@ -102,7 +102,7 @@ const ChatBubble = ({
                 </button>
                 <button
                   type="button"
-                  className="text-left px-4 py-2.5 hover:bg-blue-600/20 transition-colors cursor-pointer bg-transparent flex items-center gap-2 border-b border-[var(--border)]"
+                  className="text-left px-4 py-2.5 hover:bg-blue-600/20 transition-colors cursor-pointer bg-transparent flex items-center gap-2 border-b border-(--border)"
                   onClick={(e) => {
                     e.stopPropagation();
                     setIsMenuOpen(false);
@@ -132,7 +132,7 @@ const ChatBubble = ({
         {isEditing ? (
           <div className="flex flex-col gap-3 w-full">
             <textarea
-              className="w-full rounded-xl border px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-offset-0 resize-none border-[var(--border)] bg-[#e0ecff] text-[#0f172a] placeholder:text-[#475569] min-h-[180px] max-h-[60vh]"
+              className="w-full rounded-xl border px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-offset-0 resize-none border-(--border) bg-[#e0ecff] text-[#0f172a] placeholder:text-[#475569] min-h-[180px] max-h-[60vh]"
               value={editValue}
               onChange={(e) => handleEditChange(e.target.value)}
               rows={6}
@@ -166,7 +166,7 @@ const ChatBubble = ({
           <>
             {/* Message text */}
             <p
-              className="whitespace-pre-line break-words pr-10 leading-relaxed"
+              className="whitespace-pre-line wrap-break-word pr-10 leading-relaxed"
               style={{ color: bubbleTextColor }}
             >
               {text}

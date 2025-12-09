@@ -7,7 +7,7 @@ const MessageInput = () => {
   return (
     <form
       onSubmit={sendMessage}
-      className="border-t p-4 bg-[var(--panel)] border-[var(--border)]"
+      className="border-t p-4 bg-(--panel) border-(--border)"
     >
       <div className="flex gap-3 max-w-4xl mx-auto">
         <input
@@ -16,7 +16,7 @@ const MessageInput = () => {
           onChange={(e) => setInput(e.target.value)}
           placeholder={isConnected ? "Type a message..." : "Connecting..."}
           disabled={!isConnected}
-          className="flex-1 px-4 py-3 rounded-full focus:outline-none focus:ring-2 focus:ring-blue-500 bg-[var(--input-bg)] text-[var(--text)] border border-[var(--input-border)]"
+          className="flex-1 px-4 py-3 rounded-full focus:outline-none focus:ring-2 focus:ring-blue-500 bg-(--input-bg) text-(--text) border border-(--input-border)"
           autoFocus
         />
         <button

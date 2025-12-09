@@ -25,7 +25,7 @@ const AppContent = () => {
 
   return (
     <div
-      className="flex h-screen overflow-hidden bg-[var(--bg)]"
+      className="flex h-screen overflow-hidden bg-(--bg)"
     >
       {/* Mobile overlay */}
       {isSidebarOpen && (

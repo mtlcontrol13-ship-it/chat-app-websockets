@@ -5,10 +5,23 @@ import Sidebar from "./components/Sidebar";
 import Header from "./components/Header";
 import MessageList from "./components/MessageList";
 import MessageInput from "./components/MessageInput";
+import Modal from "./components/Modal";
 
 const AppContent = () => {
-  const { participants } = useChat();
+  const { participants, user, isLoginModalOpen, setIsLoginModalOpen, handleLoginSuccess } = useChat();
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+
+  if (!user) {
+    return (
+      <Modal
+        open={isLoginModalOpen}
+        title="Login to Chat"
+        actionLabel="Login"
+        onClose={() => {}}
+        onAction={handleLoginSuccess}
+      />
+    );
+  }
 
   return (
     <div

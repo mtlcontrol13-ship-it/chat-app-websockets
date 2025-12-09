@@ -1,4 +1,4 @@
-import { Circle, Menu } from "lucide-react";
+import { Circle, Menu, LogOut } from "lucide-react";
 import { useChat } from "../context/ChatContext";
 import { formatTimeWithMs } from "../utils/time";
 
@@ -17,6 +17,8 @@ const Header = ({ onToggleSidebar = () => {} }) => {
     toggleTheme,
     usernameInputRef,
     setIsEditingName,
+    user,
+    logout,
   } = useChat();
 
   return (
@@ -67,6 +69,20 @@ const Header = ({ onToggleSidebar = () => {} }) => {
               )}
             </span>
           </div>
+          {user && (
+            <button
+              type="button"
+              onClick={logout}
+              className="p-2 rounded-full border hover:bg-red-500/10 transition-colors"
+              title={`Logout (${user.role})`}
+              style={{
+                borderColor: "var(--border)",
+                color: "var(--text)",
+              }}
+            >
+              <LogOut className="w-5 h-5" />
+            </button>
+          )}
         </div>
       </div>
 
@@ -76,28 +92,37 @@ const Header = ({ onToggleSidebar = () => {} }) => {
         onDoubleClick={startEditingName}
         title="Double-click to change your display name"
       >
-        Logged in as{" "}
-        {isEditingName ? (
-          <input
-            ref={usernameInputRef}
-            value={pendingName}
-            onChange={(e) => setPendingName(e.target.value)}
-            onBlur={commitNameChange}
-            onKeyDown={(e) => {
-              if (e.key === "Enter") commitNameChange();
-              if (e.key === "Escape") setIsEditingName(false);
-            }}
-            className="border-b focus:outline-none"
-            style={{
-              borderColor: "var(--border)",
-              color: "var(--text)",
-              backgroundColor: "transparent",
-            }}
-          />
+        {user ? (
+          <>
+            <span style={{ color: "#3b82f6" }} className="font-semibold">
+              [{user.role.toUpperCase()}]
+            </span>{" "}
+            Logged in as{" "}
+            {isEditingName ? (
+              <input
+                ref={usernameInputRef}
+                value={pendingName}
+                onChange={(e) => setPendingName(e.target.value)}
+                onBlur={commitNameChange}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter") commitNameChange();
+                  if (e.key === "Escape") setIsEditingName(false);
+                }}
+                className="border-b focus:outline-none"
+                style={{
+                  borderColor: "var(--border)",
+                  color: "var(--text)",
+                  backgroundColor: "transparent",
+                }}
+              />
+            ) : (
+              <span className="font-semibold" style={{ color: "var(--text)" }}>
+                {username}
+              </span>
+            )}
+          </>
         ) : (
-          <span className="font-semibold" style={{ color: "var(--text)" }}>
-            {username}
-          </span>
+          <span style={{ color: "var(--text)" }}>Not logged in</span>
         )}
       </p>
     </header>

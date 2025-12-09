@@ -26,8 +26,8 @@ const ChatBubble = ({
   const handleEditSave = onEditSave ?? (() => {});
   const handleEditCancel = onEditCancel ?? (() => {});
   
-  const bubbleTextColor = isOwn ? "#0f172a" : "#0f172a";
-  const bubbleMutedColor = isOwn ? "#1f2937" : "#475569";
+  const bubbleTextColor = isOwn ? "#ffffff" : "#0f172a";
+  const bubbleMutedColor = isOwn ? "rgba(255,255,255,0.8)" : "#475569";
 
   const handleCopy = (e) => {
     e.stopPropagation();
@@ -55,8 +55,8 @@ const ChatBubble = ({
           relative ${bubbleWidthClass} px-4 py-2 text-sm shadow-md
           rounded-2xl text-[#0f172a] transition-all duration-200
           ${isOwn 
-            ? "bg-[#dcf8c6] rounded-br-sm hover:shadow-lg" 
-            : "bg-white rounded-bl-sm hover:shadow-lg"
+            ? "bg-[#2563eb] rounded-br-sm hover:shadow-lg" 
+            : "bg-[#e0ecff] rounded-bl-sm hover:shadow-lg"
           }
         `}
       >
@@ -132,17 +132,17 @@ const ChatBubble = ({
         {isEditing ? (
           <div className="flex flex-col gap-3 w-full">
             <textarea
-              className="w-full rounded-xl border-2 px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-offset-0 resize-none border-[var(--border)] bg-[var(--input-bg)] text-[var(--text)] min-h-[180px] max-h-[60vh]"
+              className="w-full rounded-xl border px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-offset-0 resize-none border-[var(--border)] bg-[#e0ecff] text-[#0f172a] placeholder:text-[#475569] min-h-[180px] max-h-[60vh]"
               value={editValue}
               onChange={(e) => handleEditChange(e.target.value)}
               rows={6}
               autoFocus
               placeholder="Edit your message..."
             />
-            <div className="flex gap-2 justify-end">
+            <div className="flex gap-3 justify-end">
               <button
                 type="button"
-                className="px-5 py-2 rounded-lg border-2 border-[var(--border)] bg-transparent hover:bg-gray-400/10 transition-all font-semibold text-sm"
+                className="px-6 py-2.5 rounded-xl bg-white/80 hover:bg-white border border-gray-300 text-[#0f172a] transition-all font-medium text-sm shadow-sm cursor-pointer"
                 onClick={(e) => {
                   e.stopPropagation();
                   handleEditCancel();
@@ -152,7 +152,7 @@ const ChatBubble = ({
               </button>
               <button
                 type="button"
-                className="px-5 py-2 rounded-lg bg-blue-600 text-white hover:bg-blue-700 active:scale-95 transition-all font-semibold text-sm shadow-md"
+                className="px-6 py-2.5 rounded-xl bg-blue-600 text-white hover:bg-blue-700 active:scale-95 transition-all font-medium text-sm shadow-sm cursor-pointer"
                 onClick={(e) => {
                   e.stopPropagation();
                   handleEditSave();
@@ -200,8 +200,8 @@ const ChatBubble = ({
             absolute bottom-0 w-2 h-2 rotate-45
             ${
               isOwn
-                ? "right-1 translate-x-1 bg-[#dcf8c6]"
-                : "left-1 -translate-x-1 bg-white"
+                ? "right-1 translate-x-1 bg-[#2563eb]"
+                : "left-1 -translate-x-1 bg-[#e0ecff]"
             }
           `}
         />

@@ -38,10 +38,9 @@ const ChatBubble = ({
       <div
         className={`
           relative max-w-[75%] px-3 py-2 text-sm shadow-sm
-          rounded-2xl 
+          rounded-2xl text-[#0f172a]
           ${isOwn ? "bg-[#dcf8c6] rounded-br-sm" : "bg-white rounded-bl-sm"}
         `}
-        style={{ color: bubbleTextColor }}
       >
         {/* Message actions */}
         {showActions && !isEditing && (
@@ -49,11 +48,10 @@ const ChatBubble = ({
             <button
               type="button"
               aria-label="Message actions"
-              className="absolute top-1/2 -translate-y-1/2 p-1 rounded-full transition-colors cursor-pointer"
+              className={`absolute top-1/2 -translate-y-1/2 p-1 rounded-full transition-colors cursor-pointer ${
+                isOwn ? "right-[calc(100%_+_4px)]" : "left-[calc(100%_+_4px)]"
+              }`}
               style={{
-                ...(isOwn
-                  ? { right: "calc(100% + 4px)" }
-                  : { left: "calc(100% + 4px)" }),
                 opacity: isHovered || isMenuOpen ? 1 : 0.6,
               }}
               onClick={(e) => {
@@ -66,27 +64,13 @@ const ChatBubble = ({
 
             {isMenuOpen && (
               <div
-                className="absolute top-0 flex flex-col min-w-[140px] rounded-xl border shadow-lg text-sm overflow-hidden"
-                style={
-                  isOwn
-                    ? {
-                        right: "calc(100% + 8px)",
-                        borderColor: "var(--border)",
-                        color: "var(--text)",
-                        backgroundColor: "var(--panel)",
-                      }
-                    : {
-                        left: "calc(100% + 8px)",
-                        borderColor: "var(--border)",
-                        color: "var(--text)",
-                        backgroundColor: "var(--panel)",
-                      }
-                }
+                className={`absolute top-0 flex flex-col min-w-[140px] rounded-xl border shadow-lg text-sm overflow-hidden border-[var(--border)] text-[var(--text)] bg-[var(--panel)] ${
+                  isOwn ? "right-[calc(100%_+_8px)]" : "left-[calc(100%_+_8px)]"
+                }`}
               >
                 <button
                   type="button"
-                  className="text-left px-4 py-2 hover:bg-blue-50 transition-colors cursor-pointer"
-                  style={{ backgroundColor: "transparent" }}
+                  className="text-left px-4 py-2 hover:bg-blue-50 transition-colors cursor-pointer bg-transparent"
                   onClick={(e) => {
                     e.stopPropagation();
                     navigator.clipboard.writeText(text);
@@ -98,8 +82,7 @@ const ChatBubble = ({
                 </button>
                 <button
                   type="button"
-                  className="text-left px-4 py-2 hover:bg-blue-50 transition-colors cursor-pointer"
-                  style={{ backgroundColor: "transparent" }}
+                  className="text-left px-4 py-2 hover:bg-blue-50 transition-colors cursor-pointer bg-transparent"
                   onClick={(e) => {
                     e.stopPropagation();
                     setIsMenuOpen(false);
@@ -111,8 +94,7 @@ const ChatBubble = ({
                 </button>
                 <button
                   type="button"
-                  className="text-left px-4 py-2 hover:bg-red-50 text-red-500 transition-colors cursor-pointer"
-                  style={{ backgroundColor: "transparent" }}
+                  className="text-left px-4 py-2 hover:bg-red-50 text-red-500 transition-colors cursor-pointer bg-transparent"
                   onClick={(e) => {
                     e.stopPropagation();
                     setIsMenuOpen(false);
@@ -130,12 +112,11 @@ const ChatBubble = ({
         {isEditing ? (
           <div className="flex flex-col gap-2">
             <textarea
-              className="w-full rounded-md border px-2 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-400"
+              className="w-full rounded-md border px-2 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-400 border-[var(--border)]"
               style={{
                 backgroundColor: "transparent",
                 color: bubbleTextColor,
                 caretColor: bubbleTextColor,
-                borderColor: "var(--border)",
                 minHeight: "96px",
               }}
               value={editValue}
@@ -145,11 +126,9 @@ const ChatBubble = ({
             <div className="flex gap-2 justify-end text-xs">
               <button
                 type="button"
-                className="px-3 py-1 rounded-full border transition-colors"
+                className="px-3 py-1 rounded-full border border-[var(--border)] bg-transparent transition-colors"
                 style={{
-                  borderColor: "var(--border)",
                   color: bubbleTextColor,
-                  backgroundColor: "transparent",
                 }}
                 onClick={(e) => {
                   e.stopPropagation();

@@ -22,23 +22,18 @@ const Header = ({ onToggleSidebar = () => {} }) => {
 
   return (
     <header
-      className="px-6 py-3.5"
-      style={{
-        backgroundColor: "var(--panel)",
-        borderBottom: "1px solid var(--border)",
-      }}
+      className="px-6 py-4 bg-[var(--panel)] border-b border-[var(--border)]"
     >
       <div className="flex items-center justify-between gap-3">
         <div className="flex items-center gap-3">
           <button
             type="button"
-            className="lg:hidden p-2 rounded-full border"
-            style={{ borderColor: "var(--border)", backgroundColor: "var(--bg)" }}
+            className="lg:hidden p-2 rounded-full border border-[var(--border)] bg-[var(--bg)]"
             onClick={onToggleSidebar}
           >
             <Menu className="w-5 h-5" />
           </button>
-          <h1 className="text-2xl font-semibold" style={{ color: "var(--text)" }}>
+          <h1 className="text-2xl font-semibold text-[var(--text)]">
             Chat
           </h1>
         </div>
@@ -46,12 +41,7 @@ const Header = ({ onToggleSidebar = () => {} }) => {
           <button
             type="button"
             onClick={toggleTheme}
-            className="px-3 py-1 text-sm rounded-full border transition-colors"
-            style={{
-              borderColor: "var(--border)",
-              color: "var(--text)",
-              backgroundColor: "var(--bg)",
-            }}
+            className="px-3 py-1 text-sm rounded-full border border-[var(--border)] bg-[var(--bg)] text-[var(--text)] transition-colors"
           >
             {isDark ? "Light mode" : "Dark mode"}
           </button>
@@ -60,7 +50,7 @@ const Header = ({ onToggleSidebar = () => {} }) => {
               className="w-3 h-3 fill-current"
               style={{ color: isConnected ? "#22c55e" : "#ef4444" }}
             />
-            <span className="text-sm" style={{ color: "var(--muted)" }}>
+            <span className="text-sm text-[var(--muted)]">
               {isConnected ? "Connected" : "Reconnecting..."} at{" "}
               {formatTimeWithMs(lastStatusTime)}
               {isConnected && (
@@ -72,14 +62,13 @@ const Header = ({ onToggleSidebar = () => {} }) => {
       </div>
 
       <p
-        className="text-sm mt-1 cursor-pointer select-none"
-        style={{ color: "var(--muted)" }}
+        className="text-sm mt-1 cursor-pointer select-none text-[var(--muted)]"
         onDoubleClick={startEditingName}
         title="Double-click to change your display name"
       >
         {user ? (
           <>
-            <span style={{ color: "#3b82f6" }} className="font-semibold">
+            <span className="font-semibold text-blue-600">
               [{user.role.toUpperCase()}]
             </span>{" "}
             Logged in as{" "}
@@ -93,21 +82,19 @@ const Header = ({ onToggleSidebar = () => {} }) => {
                   if (e.key === "Enter") commitNameChange();
                   if (e.key === "Escape") setIsEditingName(false);
                 }}
-                className="border-b focus:outline-none"
+                className="border-b focus:outline-none bg-transparent text-[var(--text)]"
                 style={{
                   borderColor: "var(--border)",
-                  color: "var(--text)",
-                  backgroundColor: "transparent",
                 }}
               />
             ) : (
-              <span className="font-semibold" style={{ color: "var(--text)" }}>
+              <span className="font-semibold text-[var(--text)]">
                 {username}
               </span>
             )}
           </>
         ) : (
-          <span style={{ color: "var(--text)" }}>Not logged in</span>
+          <span className="text-[var(--text)]">Not logged in</span>
         )}
       </p>
     </header>

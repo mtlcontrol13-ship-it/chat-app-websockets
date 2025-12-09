@@ -45,22 +45,20 @@ const Sidebar = ({ participants = [], isOpen = false }) => {
   return (
     <>
       <aside
-        className={`h-full lg:h-screen flex flex-col border-r w-72 max-w-[80%] bg-[var(--panel)] text-[var(--text)] transition-transform transform z-40 overflow-y-auto ${
+        className={`h-full lg:h-screen flex flex-col border-r w-72 max-w-[80%] bg-[var(--panel)] text-[var(--text)] transition-transform transform z-40 overflow-y-auto border-[var(--border)] ${
           isOpen ? "translate-x-0" : "-translate-x-full"
         } fixed inset-y-0 left-0 lg:static lg:translate-x-0 lg:w-72 lg:max-w-none`}
-        style={{ borderColor: "var(--border)" }}
       >
-        <div className="px-6 py-6 border-b flex flex-col justify-center" style={{ borderColor: "var(--border)" }}>
-          <h2 className="text-3xl font-bold" style={{ color: "var(--text)" }}>Messages</h2>
+        <div className="px-6 py-6 border-b border-[var(--border)] flex flex-col justify-center">
+          <h2 className="text-3xl font-bold text-[var(--text)]">Messages</h2>
         </div>
 
         <div className="px-4 pt-2 pb-4 space-y-3 flex-1">
           <p
-            className="text-xs font-semibold mb-2 flex items-center justify-between"
-            style={{ color: "var(--muted)" }}
+            className="text-xs font-semibold mb-2 flex items-center justify-between text-[var(--muted)]"
           >
             <span>Participants</span>
-            <span className="text-[11px]" style={{ color: "var(--muted)" }}>
+            <span className="text-[11px] text-[var(--muted)]">
               {participants.length}
             </span>
           </p>
@@ -68,11 +66,7 @@ const Sidebar = ({ participants = [], isOpen = false }) => {
             {contactList.map((contact) => (
               <div
                 key={contact.name}
-                className="flex items-center gap-3 px-3 py-2 rounded-2xl border cursor-pointer transition hover:translate-x-1"
-                style={{
-                  backgroundColor: "var(--bg)",
-                  borderColor: "var(--border)",
-                }}
+                className="flex items-center gap-3 px-3 py-2 rounded-2xl border bg-[var(--bg)] border-[var(--border)] cursor-pointer transition hover:translate-x-1"
               >
                 <div
                   className="w-10 h-10 rounded-full flex items-center justify-center text-sm font-semibold flex-shrink-0 relative overflow-hidden"
@@ -92,16 +86,14 @@ const Sidebar = ({ participants = [], isOpen = false }) => {
                   <div className="flex items-center justify-between gap-2">
                     <p className="font-semibold truncate">{contact.name}</p>
                     <span
-                      className="text-[11px] whitespace-nowrap"
-                      style={{ color: "var(--muted)" }}
+                      className="text-[11px] whitespace-nowrap text-[var(--muted)]"
                     >
                       {contact.time}
                     </span>
                   </div>
                   <div className="flex items-center gap-1">
                     <span
-                      className="text-xs text-ellipsis overflow-hidden whitespace-nowrap"
-                      style={{ color: "var(--muted)" }}
+                      className="text-xs text-ellipsis overflow-hidden whitespace-nowrap text-[var(--muted)]"
                     >
                       {contact.lastMessage}
                     </span>
@@ -112,41 +104,32 @@ const Sidebar = ({ participants = [], isOpen = false }) => {
           </div>
         </div>
 
-        <div className="p-4 border-t space-y-3" style={{ borderColor: "var(--border)" }}>
+        <div className="p-4 border-t border-[var(--border)] space-y-3">
           {user ? (
             <>
-              <div className="px-4 py-3 rounded-lg border" style={{ backgroundColor: "var(--bg)", borderColor: "var(--border)" }}>
+              <div className="px-4 py-3 rounded-lg border bg-[var(--bg)] border-[var(--border)]">
                 <div className="flex items-center justify-between mb-2">
                   <div className="flex items-center gap-2">
                     <User className="w-4 h-4" />
-                    <span className="text-xs font-semibold" style={{ color: "var(--muted)" }}>
+                    <span className="text-xs font-semibold text-[var(--muted)]">
                       Account
                     </span>
                   </div>
                   <span
-                    className="px-2 py-1 rounded text-xs font-semibold"
-                    style={{
-                      backgroundColor: "#3b82f6",
-                      color: "white",
-                    }}
+                    className="px-2 py-1 rounded text-xs font-semibold bg-blue-600 text-white"
                   >
                     {user.role.toUpperCase()}
                   </span>
                 </div>
                 <p className="text-sm font-semibold truncate">{user.userName}</p>
-                <p className="text-xs" style={{ color: "var(--muted)" }}>
+                <p className="text-xs text-[var(--muted)]">
                   {user.email}
                 </p>
               </div>
               <button
                 type="button"
                 onClick={logout}
-                className="text-sm w-full px-4 py-2 rounded-full border transition-colors cursor-pointer flex items-center justify-center gap-2 hover:bg-red-500/10"
-                style={{
-                  borderColor: "var(--border)",
-                  color: "var(--text)",
-                  backgroundColor: "var(--bg)",
-                }}
+                className="text-sm w-full px-4 py-2 rounded-full border border-[var(--border)] bg-[var(--bg)] transition-colors cursor-pointer flex items-center justify-center gap-2 hover:bg-red-500/10"
               >
                 <LogOut className="w-4 h-4" />
                 Logout
@@ -155,12 +138,7 @@ const Sidebar = ({ participants = [], isOpen = false }) => {
           ) : (
             <button
               type="button"
-              className="text-sm w-full px-4 py-2 rounded-full border transition-colors cursor-pointer"
-              style={{
-                borderColor: "var(--border)",
-                color: "var(--text)",
-                backgroundColor: "var(--bg)",
-              }}
+              className="text-sm w-full px-4 py-2 rounded-full border border-[var(--border)] bg-[var(--bg)] transition-colors cursor-pointer"
               onClick={() => setIsModalOpen(true)}
             >
               Login to Account

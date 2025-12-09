@@ -55,15 +55,13 @@ const Modal = ({
     <div className="fixed inset-0 z-50 flex items-center justify-center">
       <div className="absolute inset-0 bg-black/50" onClick={onClose} />
       <div
-        className="relative w-full max-w-md rounded-2xl shadow-lg p-6"
-        style={{ backgroundColor: "var(--panel)", color: "var(--text)" }}
+        className="relative w-full max-w-md rounded-2xl shadow-lg p-6 bg-[var(--panel)] text-[var(--text)]"
       >
         <div className="flex items-center justify-between mb-4">
           <h3 className="text-lg font-semibold">{title}</h3>
           <button
             type="button"
-            className="text-sm px-2 py-1 rounded-md border cursor-pointer"
-            style={{ borderColor: "var(--border)", color: "var(--text)" }}
+            className="text-sm px-2 py-1 rounded-md border border-[var(--border)] cursor-pointer text-[var(--text)]"
             onClick={onClose}
           >
             <X className="w-5 h-5" />
@@ -78,17 +76,13 @@ const Modal = ({
                 </div>
               )}
               <div className="flex flex-col gap-1">
-                <label className="text-sm" htmlFor={`${formId}-email`}>
+                <label className="text-sm text-[var(--text)]" htmlFor={`${formId}-email`}>
                   Email
                 </label>
                 <input
                   id={`${formId}-email`}
                   type="email"
-                  className="w-full px-3 py-2 rounded-lg border bg-[var(--bg)] outline-none"
-                  style={{
-                    borderColor: "var(--border)",
-                    color: "var(--text)",
-                  }}
+                  className="w-full px-3 py-2 rounded-lg border border-[var(--border)] bg-[var(--bg)] outline-none text-[var(--text)]"
                   value={formData.email}
                   onChange={(e) => setFormData({ email: e.target.value })}
                   disabled={isSubmitting}
@@ -101,12 +95,7 @@ const Modal = ({
         <div className="flex justify-end gap-2">
           <button
             type="button"
-            className="px-4 py-2 rounded-full border cursor-pointer"
-            style={{
-              borderColor: "var(--border)",
-              color: "var(--text)",
-              backgroundColor: "transparent",
-            }}
+            className="px-4 py-2 rounded-full border border-[var(--border)] bg-transparent text-[var(--text)] cursor-pointer"
             onClick={onClose}
             disabled={isSubmitting}
           >

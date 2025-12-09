@@ -17,19 +17,14 @@ const MessageList = () => {
 
   return (
     <div
-      className="flex-1 overflow-y-auto px-4 py-6 space-y-4 min-h-0"
-      style={{ backgroundColor: "var(--bg)" }}
+      className="flex-1 overflow-y-auto px-4 py-6 space-y-4 min-h-0 bg-[var(--bg)]"
     >
       {messages.map((msg) => {
         if (msg.type === "status") {
           return (
             <div key={msg.id} className="flex justify-center">
               <div
-                className="text-sm italic px-3 py-1 rounded-full"
-                style={{
-                  color: "var(--status-text)",
-                  backgroundColor: "var(--status-bg)",
-                }}
+                className="text-sm italic px-3 py-1 rounded-full text-[var(--status-text)] bg-[var(--status-bg)]"
               >
                 {msg.text}
               </div>

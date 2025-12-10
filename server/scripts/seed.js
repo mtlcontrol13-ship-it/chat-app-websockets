@@ -27,7 +27,7 @@ const seedUsers = async () => {
             console.log(`⊘ Admin already exists: ${admin2.userName} (companyId: ${admin2.companyId})`);
         }
 
-        // Now create users under each admin's company
+        // Create customers and drivers
         const usersToCreate = [
             // Admin1's company users
             { role: 'driver', email: 'driver@example.com', userName: 'Zaid Hafeez', companyId: admin1.companyId },
@@ -43,16 +43,48 @@ const seedUsers = async () => {
 
         let createdCount = 0;
         let skippedCount = 0;
+        const drivers = [];
+        const customers = [];
 
         for (const userData of usersToCreate) {
             const existingUser = await User.findOne({ email: userData.email });
             if (!existingUser) {
-                await User.create(userData);
-                console.log(`✓ Created user: ${userData.userName} (${userData.role}) under company ${userData.companyId}`);
+                const newUser = await User.create(userData);
+                console.log(`✓ Created user: ${newUser.userName} (${newUser.role}) under company ${newUser.companyId}`);
+                if (newUser.role === 'driver') {
+                    drivers.push(newUser);
+                } else if (newUser.role === 'customer') {
+                    customers.push(newUser);
+                }
                 createdCount++;
             } else {
-                console.log(`⊘ User already exists: ${userData.userName} (${userData.role})`);
+                console.log(`⊘ User already exists: ${existingUser.userName} (${existingUser.role})`);
+                if (existingUser.role === 'driver') {
+                    drivers.push(existingUser);
+                } else if (existingUser.role === 'customer') {
+                    customers.push(existingUser);
+                }
                 skippedCount++;
+            }
+        }
+
+        // Assign drivers to customers (one driver per customer for simplicity)
+        // Admin1: Zaid->Mashhood, Bilal->Ayesha
+        // Admin2: Ali->Sara, Omar->Fatima
+        const assignments = [
+            { driverEmail: 'driver@example.com', customerEmail: 'customer@example.com' },
+            { driverEmail: 'driver3@example.com', customerEmail: 'customer3@example.com' },
+            { driverEmail: 'driver2@example.com', customerEmail: 'customer2@example.com' },
+            { driverEmail: 'driver4@example.com', customerEmail: 'customer4@example.com' },
+        ];
+
+        for (const { driverEmail, customerEmail } of assignments) {
+            const driver = await User.findOne({ email: driverEmail });
+            const customer = await User.findOne({ email: customerEmail });
+            if (driver && customer && !driver.assignedTo) {
+                driver.assignedTo = customer._id;
+                await driver.save();
+                console.log(`✓ Assigned driver ${driver.userName} to customer ${customer.userName}`);
             }
         }
 

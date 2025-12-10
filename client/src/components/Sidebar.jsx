@@ -19,17 +19,43 @@ const Sidebar = ({ isOpen = false }) => {
     () =>
       companyParticipants
         .filter((participant) => {
-          // Everyone: don't show themselves
-          // Compare with both _id and id to handle backend inconsistency
+          // Don't show themselves
           if (participant._id === user?.id || participant._id === user?._id) {
             return false;
           }
-          // Admins: only see drivers and customers (not other admins)
+
+          // Admin: See drivers and customers (not other admins)
           if (user?.role === "admin") {
             return participant.role !== "admin";
           }
-          // Drivers and customers: see admins, drivers, and customers (but not themselves)
-          return true;
+
+          // Customer: See admin + their assigned drivers (not other customers)
+          if (user?.role === "customer") {
+            // Show admin
+            if (participant.role === "admin") {
+              return true;
+            }
+            // Show drivers assigned to this customer
+            if (participant.role === "driver" && participant.assignedTo?._id === user?.id) {
+              return true;
+            }
+            return false;
+          }
+
+          // Driver: See admin + their assigned customer (not other drivers)
+          if (user?.role === "driver") {
+            // Show admin
+            if (participant.role === "admin") {
+              return true;
+            }
+            // Show the customer they're assigned to
+            if (participant.role === "customer" && participant._id === user.assignedTo) {
+              return true;
+            }
+            return false;
+          }
+
+          return false;
         })
         .map((participant) => ({
           name: participant.userName,

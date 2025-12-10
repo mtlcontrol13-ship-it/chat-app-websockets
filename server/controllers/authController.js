@@ -10,7 +10,7 @@ export const loginUser = async (req, res) => {
 
         const existingUser = await User.findOne({
             email: email
-        })
+        }).populate('assignedTo', '_id userName email role')
 
         if (!existingUser) {
             return res.status(404).json({ message: "User not found" });
@@ -23,7 +23,8 @@ export const loginUser = async (req, res) => {
                 email: existingUser.email,
                 userName: existingUser.userName,
                 role: existingUser.role,
-                companyId: existingUser.companyId
+                companyId: existingUser.companyId,
+                assignedTo: existingUser.assignedTo
             }
         });
     } catch (error) {
@@ -60,8 +61,8 @@ export const getCompanyUsers = async (req, res) => {
         }
 
         // Find all users (admin, drivers, customers) with this companyId
-        // Admins have their own companyId, others are linked to admin's companyId
-        const users = await User.find({ companyId }).select('_id userName email role companyId');
+        // Populate assignedTo to get customer info for drivers
+        const users = await User.find({ companyId }).select('_id userName email role companyId assignedTo').populate('assignedTo', '_id userName email role');
 
         res.status(200).json({ 
             message: "Company users retrieved successfully",

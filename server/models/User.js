@@ -12,6 +12,11 @@ const userSchema = new mongoose.Schema({
             return this.role === 'admin' ? uuidv4() : undefined;
         }
     },
+    assignedTo: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User',
+        default: null
+    }
 })
 
 export const User = mongoose.model("User", userSchema);

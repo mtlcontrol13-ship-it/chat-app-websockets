@@ -5,8 +5,6 @@ import { useTheme } from "../hooks/useTheme";
 const ChatContext = createContext(null);
 
 export const ChatProvider = ({ children }) => {
-  const chat = useWebSocketChat();
-  const theme = useTheme();
   const [user, setUser] = useState(null);
   const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
 
@@ -19,11 +17,16 @@ export const ChatProvider = ({ children }) => {
       } catch (error) {
         console.error("Failed to parse stored user:", error);
         localStorage.removeItem("user");
+        setIsLoginModalOpen(true);
       }
     } else {
       setIsLoginModalOpen(true);
     }
   }, []);
+
+  // Pass authenticated user to WebSocket hook
+  const chat = useWebSocketChat({ user });
+  const theme = useTheme();
 
   const logout = () => {
     localStorage.removeItem("user");

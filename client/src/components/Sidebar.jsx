@@ -68,18 +68,22 @@ const Sidebar = ({ participants = [], isOpen = false }) => {
                 key={contact.name}
                 className="flex items-center gap-3 px-3 py-2 rounded-2xl border bg-(--bg) border-(--border) cursor-pointer transition hover:translate-x-1"
               >
-                <div
-                  className="w-10 h-10 rounded-full flex items-center justify-center text-sm font-semibold shrink-0 relative overflow-hidden"
-                  style={avatarStyle(contact.name)}
-                >
-                  <img
-                    src={avatarUrl(contact.name)}
-                    alt={`${contact.name} avatar`}
-                    className="absolute inset-0 w-full h-full object-cover"
-                    onError={(e) => {
-                      e.currentTarget.style.display = "none";
-                    }}
-                  />
+                <div className="relative">
+                  <div
+                    className="w-10 h-10 rounded-full flex items-center justify-center text-sm font-semibold shrink-0 relative overflow-hidden"
+                    style={avatarStyle(contact.name)}
+                  >
+                    <img
+                      src={avatarUrl(contact.name)}
+                      alt={`${contact.name} avatar`}
+                      className="absolute inset-0 w-full h-full object-cover"
+                      onError={(e) => {
+                        e.currentTarget.style.display = "none";
+                      }}
+                    />
+                  </div>
+                  {/* Online indicator */}
+                  <div className="absolute bottom-0 right-0 w-3 h-3 bg-green-500 rounded-full border-2 border-[var(--bg)]"></div>
                 </div>
 
                 <div className="flex-1 min-w-0">
@@ -92,10 +96,8 @@ const Sidebar = ({ participants = [], isOpen = false }) => {
                     </span>
                   </div>
                   <div className="flex items-center gap-1">
-                    <span
-                      className="text-xs text-ellipsis overflow-hidden whitespace-nowrap text-(--muted)"
-                    >
-                      {contact.lastMessage}
+                    <span className="text-xs text-green-600 font-medium">
+                      Online
                     </span>
                   </div>
                 </div>

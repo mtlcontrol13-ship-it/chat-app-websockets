@@ -2,17 +2,13 @@ import { useEffect, useRef, useState, useCallback } from "react";
 
 const WS_URL = import.meta.env.VITE_WS_URL;
 
-export const useWebSocketChat = () => {
+export const useWebSocketChat = ({ user = null } = {}) => {
   const [messages, setMessages] = useState([]);
   const [input, setInput] = useState("");
   const [isConnected, setIsConnected] = useState(false);
   const [username, setUsername] = useState(() => {
-    if (typeof window === "undefined") return `User${Math.floor(Math.random() * 9000 + 1000)}`;
-    return (
-      localStorage.getItem("chat-username") ||
-      sessionStorage.getItem("chat-username") ||
-      `User${Math.floor(Math.random() * 9000 + 1000)}`
-    );
+    if (!user) return null;
+    return user.name || user.email || `User${Math.floor(Math.random() * 9000 + 1000)}`;
   });
   const [participants, setParticipants] = useState([]);
   const [isEditingName, setIsEditingName] = useState(false);
@@ -32,28 +28,43 @@ export const useWebSocketChat = () => {
 
   useEffect(() => {
     usernameRef.current = username;
-    if (typeof window !== "undefined") {
-      localStorage.setItem("chat-username", username);
-      sessionStorage.setItem("chat-username", username);
+    if (username) {
+      setParticipants((prev) => {
+        const next = new Set(prev);
+        next.add(username);
+        return Array.from(next);
+      });
     }
-    setParticipants((prev) => {
-      const next = new Set(prev);
-      next.add(username);
-      return Array.from(next);
-    });
   }, [username]);
 
+  // Initialize username from user prop when user changes
+  useEffect(() => {
+    if (user && !username) {
+      const newUsername = user.name || user.email || `User${Math.floor(Math.random() * 9000 + 1000)}`;
+      setUsername(newUsername);
+    }
+  }, [user, username]);
+
   const sendIdentify = useCallback(
-    (name = usernameRef.current) => {
+    (name = usernameRef.current, userId = user?.id) => {
       if (socketRef.current?.readyState === WebSocket.OPEN) {
-        socketRef.current.send(JSON.stringify({ type: "identify", username: name }));
+        socketRef.current.send(JSON.stringify({ 
+          type: "identify", 
+          username: name,
+          userId 
+        }));
       }
     },
-    []
+    [user?.id]
   );
 
-  // WebSocket setup + reconnection logic
+  // WebSocket setup + reconnection logic (only connect if user is authenticated)
   useEffect(() => {
+    // Don't connect if no user is authenticated
+    if (!user) {
+      return;
+    }
+
     let shouldReconnect = true;
 
     const connect = () => {
@@ -63,7 +74,7 @@ export const useWebSocketChat = () => {
       ws.onopen = () => {
         setIsConnected(true);
         setLastStatusTime(Date.now());
-        sendIdentify(usernameRef.current);
+        sendIdentify(usernameRef.current, user?.id);
         ws.send(
           JSON.stringify({
             type: "status",
@@ -136,6 +147,11 @@ export const useWebSocketChat = () => {
             }
           }
 
+          if (msg.type === "participants" && Array.isArray(msg.users)) {
+            setParticipants(msg.users.map((u) => u.username || u));
+            return;
+          }
+
           if (msg.username && msg.username !== "System") {
             setParticipants((prev) => Array.from(new Set([...prev, msg.username])));
           }
@@ -182,9 +198,19 @@ export const useWebSocketChat = () => {
       }
       socketRef.current?.close();
     };
-  }, [sendIdentify]);
+  }, [user, username, sendIdentify]);
 
   // Periodic latency pings
+  // Clear state when user logs out
+  useEffect(() => {
+    if (!user) {
+      setIsConnected(false);
+      setMessages([]);
+      setParticipants([]);
+      setUsername(null);
+    }
+  }, [user]);
+
   useEffect(() => {
     if (!isConnected || !socketRef.current) return;
 

@@ -14,6 +14,7 @@ const normalizeIncoming = (data) => {
 
 const setupWebSocketServer = (httpServer) => {
   const wss = new WebSocketServer({ server: httpServer });
+  const connectedUsers = new Map(); // Track online users
 
   const broadcast = (data) => {
     const payload = JSON.stringify(data);
@@ -24,9 +25,19 @@ const setupWebSocketServer = (httpServer) => {
     }
   };
 
+  const broadcastParticipants = () => {
+    const participants = Array.from(connectedUsers.values());
+    broadcast({
+      type: "participants",
+      users: participants,
+      timestamp: Date.now(),
+    });
+  };
+
   wss.on("connection", (ws) => {
     console.log("New client connected");
     ws.userName = null;
+    ws.userId = null;
 
     ws.on("message", (rawData) => {
       const data = normalizeIncoming(rawData);
@@ -47,6 +58,13 @@ const setupWebSocketServer = (httpServer) => {
 
         if (msg.type === "identify" && msg.username) {
           ws.userName = msg.username;
+          ws.userId = msg.userId; // Store user ID if provided
+          connectedUsers.set(ws, {
+            username: msg.username,
+            userId: msg.userId,
+            joinedAt: Date.now(),
+          });
+          broadcastParticipants();
           return;
         }
 
@@ -63,12 +81,18 @@ const setupWebSocketServer = (httpServer) => {
     ws.on("close", () => {
       console.log("Client disconnected");
       const name = ws.userName || "A user";
+      
+      // Remove from connected users
+      connectedUsers.delete(ws);
+      
       broadcast({
         type: "status",
         text: `${name} left the chat`,
         username: "System",
         timestamp: Date.now(),
       });
+      
+      broadcastParticipants();
     });
   });
 

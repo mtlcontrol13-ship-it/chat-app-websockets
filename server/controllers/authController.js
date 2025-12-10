@@ -22,7 +22,8 @@ export const loginUser = async (req, res) => {
                 id: existingUser._id,
                 email: existingUser.email,
                 userName: existingUser.userName,
-                role: existingUser.role
+                role: existingUser.role,
+                companyId: existingUser.companyId
             }
         });
     } catch (error) {

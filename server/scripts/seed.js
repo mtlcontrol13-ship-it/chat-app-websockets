@@ -31,10 +31,14 @@ const seedUsers = async () => {
         const usersToCreate = [
             // Admin1's company users
             { role: 'driver', email: 'driver@example.com', userName: 'Zaid Hafeez', companyId: admin1.companyId },
+            { role: 'driver', email: 'driver3@example.com', userName: 'Bilal Aslam', companyId: admin1.companyId },
             { role: 'customer', email: 'customer@example.com', userName: 'Mashhood Rehman', companyId: admin1.companyId },
+            { role: 'customer', email: 'customer3@example.com', userName: 'Ayesha Khan', companyId: admin1.companyId },
             // Admin2's company users
             { role: 'driver', email: 'driver2@example.com', userName: 'Ali Khan', companyId: admin2.companyId },
+            { role: 'driver', email: 'driver4@example.com', userName: 'Omar Farooq', companyId: admin2.companyId },
             { role: 'customer', email: 'customer2@example.com', userName: 'Sara Ahmed', companyId: admin2.companyId },
+            { role: 'customer', email: 'customer4@example.com', userName: 'Fatima Noor', companyId: admin2.companyId },
         ];
 
         let createdCount = 0;

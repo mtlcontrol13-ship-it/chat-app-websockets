@@ -1,11 +1,11 @@
 import { useMemo, useState } from "react";
-import { LogOut, User } from "lucide-react";
+import { LogOut, PlusIcon, User } from "lucide-react";
 import { useChat } from "../context/ChatContext";
 import Modal from "./Modal";
 
-const Sidebar = ({ participants = [], isOpen = false }) => {
+const Sidebar = ({ isOpen = false }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const { user, logout, handleLoginSuccess } = useChat();
+  const { user, logout, handleLoginSuccess, companyParticipants } = useChat();
   const timestamp = useMemo(
     () =>
       new Intl.DateTimeFormat("en", {
@@ -17,12 +17,28 @@ const Sidebar = ({ participants = [], isOpen = false }) => {
 
   const contactList = useMemo(
     () =>
-      participants.map((name) => ({
-        name,
-        lastMessage: "Tap to start chatting",
-        time: timestamp,
-      })),
-    [participants, timestamp]
+      companyParticipants
+        .filter((participant) => {
+          // Everyone: don't show themselves
+          // Compare with both _id and id to handle backend inconsistency
+          if (participant._id === user?.id || participant._id === user?._id) {
+            return false;
+          }
+          // Admins: only see drivers and customers (not other admins)
+          if (user?.role === "admin") {
+            return participant.role !== "admin";
+          }
+          // Drivers and customers: see admins, drivers, and customers (but not themselves)
+          return true;
+        })
+        .map((participant) => ({
+          name: participant.userName,
+          email: participant.email,
+          role: participant.role,
+          lastMessage: "Tap to start chatting",
+          time: timestamp,
+        })),
+    [companyParticipants, timestamp, user]
   );
 
   const avatarStyle = (name) => {
@@ -54,12 +70,10 @@ const Sidebar = ({ participants = [], isOpen = false }) => {
         </div>
 
         <div className="px-4 pt-2 pb-4 space-y-3 flex-1">
-          <p
-            className="text-xs font-semibold mb-2 flex items-center justify-between text-(--muted)"
-          >
+          <p className="text-xs font-semibold mb-2 flex items-center justify-between text-(--muted)">
             <span>Participants</span>
             <span className="text-[11px] text-(--muted)">
-              {participants.length}
+              {companyParticipants.length}
             </span>
           </p>
           <div className="space-y-2 text-sm">
@@ -89,9 +103,7 @@ const Sidebar = ({ participants = [], isOpen = false }) => {
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center justify-between gap-2">
                     <p className="font-semibold truncate">{contact.name}</p>
-                    <span
-                      className="text-[11px] whitespace-nowrap text-(--muted)"
-                    >
+                    <span className="text-[11px] whitespace-nowrap text-(--muted)">
                       {contact.time}
                     </span>
                   </div>
@@ -117,16 +129,14 @@ const Sidebar = ({ participants = [], isOpen = false }) => {
                       Account
                     </span>
                   </div>
-                  <span
-                    className="px-2 py-1 rounded text-xs font-semibold bg-blue-600 text-white"
-                  >
+                  <span className="px-2 py-1 rounded text-xs font-semibold bg-blue-600 text-white">
                     {user.role.toUpperCase()}
                   </span>
                 </div>
-                <p className="text-sm font-semibold truncate">{user.userName}</p>
-                <p className="text-xs text-(--muted)">
-                  {user.email}
+                <p className="text-sm font-semibold truncate">
+                  {user.userName}
                 </p>
+                <p className="text-xs text-(--muted)">{user.email}</p>
               </div>
               <button
                 type="button"

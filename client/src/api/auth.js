@@ -53,3 +53,26 @@ export async function register(username, email) {
         throw error;
     }
 }
+
+export async function getCompanyUsers(companyId) {
+    try {
+        const response = await fetch(`${API_BASE_URL}/api/company/${companyId}/users`, {
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json",
+            }
+        });
+
+        const data = await response.json();
+
+        if (!response.ok) {
+            throw new Error(data.message || "Failed to fetch company users");
+        }
+
+        // Return the users array from the response
+        return data.users || data;
+    } catch (error) {
+        console.error("Error fetching company users:", error);
+        throw error;
+    }
+}

@@ -8,7 +8,7 @@ import MessageInput from "./components/MessageInput";
 import Modal from "./components/Modal";
 
 const AppContent = () => {
-  const { participants, user, isLoginModalOpen, setIsLoginModalOpen, handleLoginSuccess } = useChat();
+  const { user, isLoginModalOpen, setIsLoginModalOpen, handleLoginSuccess } = useChat();
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
   if (!user) {
@@ -36,7 +36,6 @@ const AppContent = () => {
       )}
 
       <Sidebar
-        participants={participants}
         isOpen={isSidebarOpen}
         onClose={() => setIsSidebarOpen(false)}
       />

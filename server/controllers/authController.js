@@ -50,3 +50,24 @@ export const registerUser = async (req, res) => {
         res.status(500).json({ message: "Error registering user", error: error.message });
     }
 }
+
+export const getCompanyUsers = async (req, res) => {
+    try {
+        const { companyId } = req.params;
+
+        if (!companyId) {
+            return res.status(400).json({ message: "Company ID is required" });
+        }
+
+        // Find all users (admin, drivers, customers) with this companyId
+        // Admins have their own companyId, others are linked to admin's companyId
+        const users = await User.find({ companyId }).select('_id userName email role companyId');
+
+        res.status(200).json({ 
+            message: "Company users retrieved successfully",
+            users
+        });
+    } catch (error) {
+        res.status(500).json({ message: "Error fetching company users", error: error.message });
+    }
+}

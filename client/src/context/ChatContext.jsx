@@ -1,12 +1,14 @@
 import { createContext, useContext, useState, useEffect } from "react";
 import { useWebSocketChat } from "../hooks/useWebSocketChat";
 import { useTheme } from "../hooks/useTheme";
+import { getCompanyUsers } from "../api/auth";
 
 const ChatContext = createContext(null);
 
 export const ChatProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
+  const [companyParticipants, setCompanyParticipants] = useState([]);
 
   // Load user from localStorage on mount
   useEffect(() => {
@@ -30,6 +32,25 @@ export const ChatProvider = ({ children }) => {
       setIsLoginModalOpen(true);
     }
   }, []);
+
+  // Fetch company users when user is authenticated
+  useEffect(() => {
+    const fetchCompanyUsers = async () => {
+      if (user?.companyId) {
+        try {
+          const response = await getCompanyUsers(user.companyId);
+          const users = response.users || response || [];
+          setCompanyParticipants(users);
+        } catch (error) {
+          console.error("Failed to fetch company users:", error);
+        }
+      } else {
+        setCompanyParticipants([]);
+      }
+    };
+
+    fetchCompanyUsers();
+  }, [user?.companyId]);
 
   // Pass authenticated user to WebSocket hook
   const chat = useWebSocketChat({ user });
@@ -59,6 +80,7 @@ export const ChatProvider = ({ children }) => {
         setIsLoginModalOpen,
         logout,
         handleLoginSuccess,
+        companyParticipants,
       }}
     >
       {children}

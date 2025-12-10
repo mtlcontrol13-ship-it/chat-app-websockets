@@ -6,10 +6,7 @@ export const useWebSocketChat = ({ user = null } = {}) => {
   const [messages, setMessages] = useState([]);
   const [input, setInput] = useState("");
   const [isConnected, setIsConnected] = useState(false);
-  const [username, setUsername] = useState(() => {
-    if (!user) return null;
-    return user.name || user.email || `User${Math.floor(Math.random() * 9000 + 1000)}`;
-  });
+  const [username, setUsername] = useState(null);
   const [participants, setParticipants] = useState([]);
   const [isEditingName, setIsEditingName] = useState(false);
   const [pendingName, setPendingName] = useState("");
@@ -37,13 +34,15 @@ export const useWebSocketChat = ({ user = null } = {}) => {
     }
   }, [username]);
 
-  // Initialize username from user prop when user changes
+  // Initialize or refresh username from authenticated user
   useEffect(() => {
-    if (user && !username) {
-      const newUsername = user.name || user.email || `User${Math.floor(Math.random() * 9000 + 1000)}`;
+    if (user) {
+      const newUsername =
+        user.userName || user.name || user.email || `User${Math.floor(Math.random() * 9000 + 1000)}`;
       setUsername(newUsername);
+      setPendingName(newUsername);
     }
-  }, [user, username]);
+  }, [user]);
 
   const sendIdentify = useCallback(
     (name = usernameRef.current, userId = user?.id) => {

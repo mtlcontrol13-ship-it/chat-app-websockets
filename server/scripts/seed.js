@@ -10,7 +10,9 @@ const seedUsers = async () => {
         const users = [
             { role: 'admin', email: 'admin@example.com', userName: 'Usman Amin' },
             { role: 'driver', email: 'driver@example.com', userName: 'Zaid Hafeez' },
+            { role: 'driver', email: 'driver2@example.com', userName: 'Another Driver' },
             { role: 'customer', email: 'customer@example.com', userName: 'Mashhood Rehman' },
+            { role: 'customer', email: 'customer2@example.com', userName: 'Another Customer' }
         ];
 
         let createdCount = 0;

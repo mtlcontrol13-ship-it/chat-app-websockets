@@ -13,7 +13,14 @@ export const ChatProvider = ({ children }) => {
     const storedUser = localStorage.getItem("user");
     if (storedUser) {
       try {
-        setUser(JSON.parse(storedUser));
+        const parsed = JSON.parse(storedUser);
+        if (parsed?.userName) {
+          setUser(parsed);
+        } else {
+          // Drop legacy entries without userName so we force a fresh login
+          localStorage.removeItem("user");
+          setIsLoginModalOpen(true);
+        }
       } catch (error) {
         console.error("Failed to parse stored user:", error);
         localStorage.removeItem("user");
@@ -37,6 +44,7 @@ export const ChatProvider = ({ children }) => {
   const handleLoginSuccess = (userData) => {
     if (userData && userData.user) {
       setUser(userData.user);
+      localStorage.setItem("user", JSON.stringify(userData.user));
       setIsLoginModalOpen(false);
     }
   };

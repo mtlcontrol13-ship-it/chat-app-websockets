@@ -70,6 +70,19 @@ export const ChatProvider = ({ children }) => {
     }
   };
 
+  const handleAddUser = async (userData) => {
+    // After user is added, refresh the participant list
+    if (user?.companyId) {
+      try {
+        const response = await getCompanyUsers(user.companyId);
+        const users = response.users || response || [];
+        setCompanyParticipants(users);
+      } catch (error) {
+        console.error("Failed to refresh company users:", error);
+      }
+    }
+  }
+
   return (
     <ChatContext.Provider
       value={{
@@ -80,6 +93,7 @@ export const ChatProvider = ({ children }) => {
         setIsLoginModalOpen,
         logout,
         handleLoginSuccess,
+        handleAddUser,
         companyParticipants,
       }}
     >

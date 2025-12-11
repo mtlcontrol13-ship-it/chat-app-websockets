@@ -1,6 +1,7 @@
-import { useId, useState } from "react";
 import { X } from "lucide-react";
-import { login } from "../api/auth";
+import { useId, useState } from "react";
+import { addUser } from "../api/auth";
+import { useChat } from "../context/ChatContext";
 
 const Modal = ({
   open = false,
@@ -10,10 +11,11 @@ const Modal = ({
   onAction = () => {},
   onClose = () => {},
 }) => {
+  const { user } = useChat();
   if (!open) return null;
 
   const formId = useId();
-  const [formData, setFormData] = useState({ email: "" });
+  const [formData, setFormData] = useState({ email: "", companyId: "" });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState("");
 
@@ -26,6 +28,11 @@ const Modal = ({
       return;
     }
 
+    if (!formData.companyId.trim()) {
+      setError("Company ID is required");
+      return;
+    }
+
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(formData.email)) {
       setError("Please enter a valid email address.");
@@ -35,17 +42,17 @@ const Modal = ({
     setIsSubmitting(true);
 
     try {
-      const response = await login(formData.email);
+      const response = await addUser(formData.email,  user?.email, formData.companyId);
 
       if (response && response.message) {
-        setFormData({ email: "" });
+        setFormData({ email: "", companyId: "" });
         setError("");
         onClose();
         onAction(response);
       }
     } catch (error) {
-      console.error("Login error:", error);
-      setError(error?.message || "Login failed. Please try again.");
+      console.error("Add user to chat error:", error);
+      setError(error?.message || "Failed to add user to chat. Please try again.");
     } finally {
       setIsSubmitting(false);
     }
@@ -83,8 +90,24 @@ const Modal = ({
                   id={`${formId}-email`}
                   type="email"
                   className="w-full px-3 py-2 rounded-lg border border-(--border) bg-(--bg) outline-none text-(--text)"
+                  placeholder="john@example.com"
                   value={formData.email}
-                  onChange={(e) => setFormData({ email: e.target.value })}
+                  onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                  disabled={isSubmitting}
+                  required
+                />
+              </div>
+              <div className="flex flex-col gap-1">
+                <label className="text-sm text-(--text)" htmlFor={`${formId}-companyId`}>
+                  Company ID
+                </label>
+                <input
+                  id={`${formId}-companyId`}
+                  type="text"
+                  className="w-full px-3 py-2 rounded-lg border border-(--border) bg-(--bg) outline-none text-(--text)"
+                  placeholder="Company ID"
+                  value={formData.companyId}
+                  onChange={(e) => setFormData({ ...formData, companyId: e.target.value })}
                   disabled={isSubmitting}
                   required
                 />
@@ -108,7 +131,7 @@ const Modal = ({
             onClick={children ? onAction : undefined}
             disabled={isSubmitting}
           >
-            {isSubmitting ? "Logging in..." : actionLabel}
+            {isSubmitting ? "Adding user..." : actionLabel}
           </button>
         </div>
       </div>

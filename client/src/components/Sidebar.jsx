@@ -5,7 +5,7 @@ import Modal from "./Modal";
 
 const Sidebar = ({ isOpen = false }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const { user, logout, handleLoginSuccess, companyParticipants } = useChat();
+  const { user, logout, handleAddUser, companyParticipants } = useChat();
   const timestamp = useMemo(
     () =>
       new Intl.DateTimeFormat("en", {
@@ -36,7 +36,10 @@ const Sidebar = ({ isOpen = false }) => {
               return true;
             }
             // Show drivers assigned to this customer
-            if (participant.role === "driver" && participant.assignedTo?._id === user?.id) {
+            if (
+              participant.role === "driver" &&
+              participant.assignedTo?._id === user?.id
+            ) {
               return true;
             }
             return false;
@@ -49,7 +52,10 @@ const Sidebar = ({ isOpen = false }) => {
               return true;
             }
             // Show the customer they're assigned to
-            if (participant.role === "customer" && participant._id === user.assignedTo) {
+            if (
+              participant.role === "customer" &&
+              participant._id === user.assignedTo
+            ) {
               return true;
             }
             return false;
@@ -91,8 +97,16 @@ const Sidebar = ({ isOpen = false }) => {
           isOpen ? "translate-x-0" : "-translate-x-full"
         } fixed inset-y-0 left-0 lg:static lg:translate-x-0 lg:w-72 lg:max-w-none`}
       >
-        <div className="px-6 py-6 border-b border-(--border) flex flex-col justify-center">
-          <h2 className="text-3xl font-bold text-(--text)">Messages</h2>
+        {/* Messgae title + new chat button - grid */}
+        <div className="px-4 py-6 border-b border-(--border) flex items-center justify-between">
+          <h2 className="text-3xl font-bold">Chats</h2>
+          <button
+            type="button"
+            className="p-2 rounded-full border border-(--border) bg-(--bg) text-(--text) hover:bg-blue-600 hover:text-white transition-colors cursor-pointer duration-300"
+            onClick={() => setIsModalOpen(true)}
+          >
+            <PlusIcon className="w-5 h-5" />
+          </button>
         </div>
 
         <div className="px-4 pt-2 pb-4 space-y-3 flex-1">
@@ -187,9 +201,9 @@ const Sidebar = ({ isOpen = false }) => {
 
       <Modal
         open={isModalOpen}
-        title="Login to Chat"
-        actionLabel="Login"
-        onAction={handleLoginSuccess}
+        title="Add New User"
+        actionLabel="Add User"
+        onAction={handleAddUser}
         onClose={() => setIsModalOpen(false)}
       />
     </>

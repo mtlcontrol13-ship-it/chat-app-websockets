@@ -44,7 +44,7 @@ export const registerUser = async (req, res) => {
             return res.status(400).json({ message: "This email is already registered. Please use a different email." });
         }
 
-        const newUser = new User({ username, email });
+        const newUser = new User({ userName: username, email });
         await newUser.save();
         res.status(201).json({ message: "User registered successfully" });
     } catch (error) {

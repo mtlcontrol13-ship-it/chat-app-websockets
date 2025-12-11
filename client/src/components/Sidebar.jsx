@@ -5,7 +5,16 @@ import Modal from "./Modal";
 
 const Sidebar = ({ isOpen = false }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [modalType, setModalType] = useState("login"); // 'login', 'register', or 'addUser'
   const { user, logout, handleAddUser, companyParticipants } = useChat();
+  
+  const handleSwitchMode = (newMode) => {
+    console.log("handleSwitchMode called with:", newMode);
+    console.log("Current user:", user);
+    setModalType(newMode);
+  };
+  
+  console.log("Sidebar render - user:", user, "isModalOpen:", isModalOpen, "modalType:", modalType);
   const timestamp = useMemo(
     () =>
       new Intl.DateTimeFormat("en", {
@@ -99,11 +108,14 @@ const Sidebar = ({ isOpen = false }) => {
       >
         <div className="px-4 py-6 border-b border-(--border) flex items-center justify-between">
           <h2 className="text-3xl font-bold">Chats</h2>
-          {user.role === "admin" && (
+          {user?.role === "admin" && (
             <button
               type="button"
               className="p-2 rounded-full border border-(--border) bg-(--bg) text-(--text) hover:bg-blue-600 hover:text-white transition-colors cursor-pointer duration-300"
-              onClick={() => setIsModalOpen(true)}
+              onClick={() => {
+                setModalType("addUser");
+                setIsModalOpen(true);
+              }}
             >
               <PlusIcon className="w-5 h-5" />
             </button>
@@ -189,25 +201,62 @@ const Sidebar = ({ isOpen = false }) => {
               </button>
             </>
           ) : (
-            <button
-              type="button"
-              className="text-sm w-full px-4 py-2 rounded-full border border-(--border) bg-(--bg) transition-colors cursor-pointer"
-              onClick={() => setIsModalOpen(true)}
-            >
-              Login to Account
-            </button>
+            <div className="space-y-2">
+              <button
+                type="button"
+                className="text-sm w-full px-4 py-2 rounded-full border border-(--border) bg-(--bg) transition-colors cursor-pointer"
+                onClick={() => {
+                  setModalType("login");
+                  setIsModalOpen(true);
+                }}
+              >
+                Login
+              </button>
+              <button
+                type="button"
+                className="text-sm w-full px-4 py-2 rounded-full border border-(--border) bg-blue-600 text-white transition-colors cursor-pointer hover:bg-blue-700"
+                onClick={() => {
+                  setModalType("register");
+                  setIsModalOpen(true);
+                }}
+              >
+                Create Account
+              </button>
+            </div>
           )}
         </div>
       </aside>
 
-      <Modal
-        open={isModalOpen}
-        title={user?.role === "admin" ? "Add New User" : "Login"}
-        modalType={user?.role === "admin" ? "addUser" : "login"}
-        actionLabel={user?.role === "admin" ? "Add User" : "Login"}
-        onAction={user?.role === "admin" ? handleAddUser : () => {}}
-        onClose={() => setIsModalOpen(false)}
-      />
+      {!user ? (
+        <Modal
+          key="login-register-modal"
+          open={isModalOpen}
+          title={
+            modalType === "login"
+              ? "Login"
+              : "Create Account"
+          }
+          modalType={modalType}
+          actionLabel={
+            modalType === "login"
+              ? "Login"
+              : "Register"
+          }
+          onAction={() => {}}
+          onClose={() => setIsModalOpen(false)}
+          onSwitchMode={handleSwitchMode}
+        />
+      ) : user?.role === "admin" ? (
+        <Modal
+          key="admin-modal"
+          open={isModalOpen}
+          title="Add New User"
+          modalType="addUser"
+          actionLabel="Add User"
+          onAction={handleAddUser}
+          onClose={() => setIsModalOpen(false)}
+        />
+      ) : null}
     </>
   );
 };

@@ -1,6 +1,6 @@
 import { X } from "lucide-react";
 import { useId, useState } from "react";
-import { addUser, login } from "../api/auth";
+import { addUser, login, register } from "../api/auth";
 import { useChat } from "../context/ChatContext";
 
 const Modal = ({
@@ -11,18 +11,26 @@ const Modal = ({
   modalType = "login", // 'login' or 'addUser'
   onAction = () => {},
   onClose = () => {},
+  onSwitchMode = () => {}, // callback to switch between login and register
 }) => {
   const { user, handleLoginSuccess } = useChat();
-  if (!open) return null;
-
+  const [internalMode, setInternalMode] = useState(modalType);
   const formId = useId();
   const [formData, setFormData] = useState({
     email: "",
     companyId: "",
     role: "customer",
+    userName: "",
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState("");
+  
+  console.log("Modal rendered with modalType:", modalType, "internalMode:", internalMode);
+  
+  if (!open) return null;
+  
+  // Use internalMode for switching between login/register
+  const currentMode = (modalType === "login" || modalType === "register") ? internalMode : modalType;
 
   const handleLoginSubmit = async (e) => {
     e.preventDefault();
@@ -44,12 +52,50 @@ const Modal = ({
     try {
       const response = await login(formData.email);
       handleLoginSuccess(response);
-      setFormData({ email: "", companyId: "", role: "customer" });
+      setFormData({ email: "", companyId: "", role: "customer", userName: "" });
       setError("");
       onClose();
     } catch (error) {
       console.error("Login error:", error);
       setError(error?.message || "Login failed. Please try again.");
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  const handleRegisterSubmit = async (e) => {
+    e.preventDefault();
+    setError("");
+
+    if (!formData.userName.trim()) {
+      setError("Please enter a username");
+      return;
+    }
+
+    if (!formData.email.trim()) {
+      setError("Please enter an email address");
+      return;
+    }
+
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(formData.email)) {
+      setError("Please enter a valid email (e.g., name@company.com)");
+      return;
+    }
+
+    setIsSubmitting(true);
+
+    try {
+      const response = await register(formData.userName, formData.email);
+      if (response && response.message) {
+        setFormData({ email: "", companyId: "", role: "customer", userName: "" });
+        setError("");
+        onClose();
+        onAction(response);
+      }
+    } catch (error) {
+      console.error("Register error:", error);
+      setError(error?.message || "Registration failed. Please try again.");
     } finally {
       setIsSubmitting(false);
     }
@@ -86,7 +132,7 @@ const Modal = ({
       );
 
       if (response && response.message) {
-        setFormData({ email: "", companyId: "", role: "customer" });
+        setFormData({ email: "", companyId: "", role: "customer", userName: "" });
         setError("");
         onClose();
         onAction(response);
@@ -101,15 +147,24 @@ const Modal = ({
     }
   };
 
-  const handleSubmit =
-    modalType === "login" ? handleLoginSubmit : handleAddUserSubmit;
+  const handleSubmit = (e) => {
+    if (currentMode === "login") {
+      handleLoginSubmit(e);
+    } else if (currentMode === "register") {
+      handleRegisterSubmit(e);
+    } else {
+      handleAddUserSubmit(e);
+    }
+  };
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center">
       <div className="absolute inset-0 bg-black/50" onClick={onClose} />
       <div className="relative w-full max-w-md rounded-2xl shadow-lg p-6 bg-(--panel) text-(--text)">
         <div className="flex items-center justify-between mb-4">
-          <h3 className="text-lg font-semibold">{title}</h3>
+          <h3 className="text-lg font-semibold">
+            {currentMode === "login" ? "Login" : currentMode === "register" ? "Create Account" : title}
+          </h3>
           <button
             type="button"
             className="text-sm px-2 py-1 rounded-md border border-(--border) cursor-pointer text-(--text)"
@@ -124,6 +179,28 @@ const Modal = ({
               {error && (
                 <div className="p-3 rounded-lg bg-red-500/20 border border-red-500/50 text-red-600 text-sm">
                   {error}
+                </div>
+              )}
+              {currentMode === "register" && (
+                <div className="flex flex-col gap-1">
+                  <label
+                    className="text-sm text-(--text)"
+                    htmlFor={`${formId}-username`}
+                  >
+                    Username
+                  </label>
+                  <input
+                    id={`${formId}-username`}
+                    type="text"
+                    className="w-full px-3 py-2 rounded-lg border border-(--border) bg-(--bg) outline-none text-(--text)"
+                    placeholder="john_doe"
+                    value={formData.userName}
+                    onChange={(e) =>
+                      setFormData({ ...formData, userName: e.target.value })
+                    }
+                    disabled={isSubmitting}
+                    required
+                  />
                 </div>
               )}
               <div className="flex flex-col gap-1">
@@ -146,7 +223,7 @@ const Modal = ({
                   required
                 />
               </div>
-              {modalType === "addUser" && (
+              {currentMode === "addUser" && (
                 <>
                   <div className="flex flex-col gap-1">
                     <label
@@ -194,6 +271,47 @@ const Modal = ({
             </form>
           )}
         </div>
+        {(currentMode === "login" || currentMode === "register") && (
+          <div className="text-center mb-4 border-t border-(--border) pt-4">
+            {currentMode === "login" ? (
+              <p className="text-sm text-(--muted)">
+                Don't have an account?{" "}
+                <button
+                  type="button"
+                  onClick={(e) => {
+                    console.log("Create one clicked");
+                    e.preventDefault();
+                    e.stopPropagation();
+                    setFormData({ email: "", companyId: "", role: "customer", userName: "" });
+                    setError("");
+                    setInternalMode("register");
+                  }}
+                  className="text-blue-600 hover:text-blue-700 font-semibold cursor-pointer underline"
+                >
+                  Create one
+                </button>
+              </p>
+            ) : (
+              <p className="text-sm text-(--muted)">
+                Already have an account?{" "}
+                <button
+                  type="button"
+                  onClick={(e) => {
+                    console.log("Login here clicked");
+                    e.preventDefault();
+                    e.stopPropagation();
+                    setFormData({ email: "", companyId: "", role: "customer", userName: "" });
+                    setError("");
+                    setInternalMode("login");
+                  }}
+                  className="text-blue-600 hover:text-blue-700 font-semibold cursor-pointer underline"
+                >
+                  Login here
+                </button>
+              </p>
+            )}
+          </div>
+        )}
         <div className="flex justify-end gap-2">
           <button
             type="button"
@@ -210,7 +328,7 @@ const Modal = ({
             onClick={children ? onAction : undefined}
             disabled={isSubmitting}
           >
-            {isSubmitting ? (modalType === "login" ? "Logging in..." : "Adding user...") : actionLabel}
+            {isSubmitting ? (currentMode === "login" ? "Logging in..." : currentMode === "register" ? "Registering..." : "Adding user...") : (currentMode === "login" ? "Login" : currentMode === "register" ? "Register" : actionLabel)}
           </button>
         </div>
       </div>

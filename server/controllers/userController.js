@@ -29,15 +29,14 @@ export const addUserToChat = async (req, res) => {
             return res.status(404).json({ message: "This email is not registered. Please ask them to register first." });
         }
 
-        // Then check if user belongs to the specified company
-        if (userByEmail.companyId !== companyId) {
-            return res.status(400).json({ message: "This person is not part of your company. Please verify the Company ID and email." });
-        }
-
         // Validate that the role provided matches the user's actual role
         if (role && userByEmail.role !== role) {
             return res.status(400).json({ message: `The user ${userByEmail.userName} has role "${userByEmail.role}", not "${role}". Please select the correct role.` });
         }
+
+        // Assign the admin's companyId to the user
+        userByEmail.companyId = companyId;
+        await userByEmail.save();
 
         // Return user details
         res.status(200).json({

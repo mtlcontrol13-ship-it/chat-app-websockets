@@ -97,9 +97,9 @@ const Sidebar = ({ isOpen = false }) => {
           isOpen ? "translate-x-0" : "-translate-x-full"
         } fixed inset-y-0 left-0 lg:static lg:translate-x-0 lg:w-72 lg:max-w-none`}
       >
-        {user.role === "admin" && (
-          <div className="px-4 py-6 border-b border-(--border) flex items-center justify-between">
-            <h2 className="text-3xl font-bold">Chats</h2>
+        <div className="px-4 py-6 border-b border-(--border) flex items-center justify-between">
+          <h2 className="text-3xl font-bold">Chats</h2>
+          {user.role === "admin" && (
             <button
               type="button"
               className="p-2 rounded-full border border-(--border) bg-(--bg) text-(--text) hover:bg-blue-600 hover:text-white transition-colors cursor-pointer duration-300"
@@ -107,8 +107,8 @@ const Sidebar = ({ isOpen = false }) => {
             >
               <PlusIcon className="w-5 h-5" />
             </button>
-          </div>
-        )}
+          )}
+        </div>
 
         <div className="px-4 pt-2 pb-4 space-y-3 flex-1">
           <p className="text-xs font-semibold mb-2 flex items-center justify-between text-(--muted)">

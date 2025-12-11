@@ -210,7 +210,7 @@ const Modal = ({
             onClick={children ? onAction : undefined}
             disabled={isSubmitting}
           >
-            {isSubmitting ? "Adding user..." : actionLabel}
+            {isSubmitting ? (modalType === "login" ? "Logging in..." : "Adding user...") : actionLabel}
           </button>
         </div>
       </div>

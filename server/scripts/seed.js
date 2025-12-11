@@ -10,7 +10,6 @@ const seedUsers = async () => {
         // First, create or get admins (they auto-generate companyId)
         const admin1Data = { role: 'admin', email: 'admin@example.com', userName: 'Usman Amin' };
         const admin2Data = { role: 'admin', email: 'admin2@example.com', userName: 'Ahmed Ali' };
-        const admin3Data = { role: 'admin', email: 'admin3@example.com', userName: 'Sara Khan' };
 
         let admin1 = await User.findOne({ email: admin1Data.email });
         if (!admin1) {
@@ -28,14 +27,6 @@ const seedUsers = async () => {
             console.log(`⊘ Admin already exists: ${admin2.userName} (companyId: ${admin2.companyId})`);
         }
 
-        let admin3 = await User.findOne({ email: admin3Data.email });
-        if (!admin3) {
-            admin3 = await User.create(admin3Data);
-            console.log(`✓ Created admin: ${admin3.userName} with companyId: ${admin3.companyId}`);
-        } else {
-            console.log(`⊘ Admin already exists: ${admin3.userName} (companyId: ${admin3.companyId})`);
-        }
-
         // Create customers and drivers
         const usersToCreate = [
             // Admin1's company users
@@ -48,9 +39,6 @@ const seedUsers = async () => {
             { role: 'driver', email: 'driver4@example.com', userName: 'Omar Farooq', companyId: admin2.companyId },
             { role: 'customer', email: 'customer2@example.com', userName: 'Sara Ahmed', companyId: admin2.companyId },
             { role: 'customer', email: 'customer4@example.com', userName: 'Fatima Noor', companyId: admin2.companyId },
-            //Admin3's company users
-            { role: 'driver', email: 'driver5@example.com', userName: 'John Doe', companyId: admin3.companyId },
-            { role: 'customer', email: 'customer5@example.com', userName: 'Jane Smith', companyId: admin3.companyId },
         ];
 
         let createdCount = 0;

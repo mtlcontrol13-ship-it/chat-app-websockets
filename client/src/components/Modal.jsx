@@ -1,5 +1,5 @@
 import { X } from "lucide-react";
-import { useId, useState } from "react";
+import { useId, useState, useEffect } from "react";
 import { addUser, login, register } from "../api/auth";
 import { useChat } from "../context/ChatContext";
 
@@ -24,6 +24,19 @@ const Modal = ({
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState("");
+  
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  
+  // Reset internal mode when modal opens or modalType changes
+  useEffect(() => {
+    if (open) {
+      setInternalMode(modalType);
+    } else {
+      // Clear form data when modal closes
+      setFormData({ email: "", companyId: "", role: "customer", userName: "" });
+      setError("");
+    }
+  }, [open, modalType]);
   
   if (!open) return null;
   
@@ -54,7 +67,6 @@ const Modal = ({
       setError("");
       onClose();
     } catch (error) {
-      console.error("Login error:", error);
       setError(error?.message || "Login failed. Please try again.");
     } finally {
       setIsSubmitting(false);
@@ -75,7 +87,6 @@ const Modal = ({
       return;
     }
 
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(formData.email)) {
       setError("Please enter a valid email (e.g., name@company.com)");
       return;
@@ -84,15 +95,16 @@ const Modal = ({
     setIsSubmitting(true);
 
     try {
-      const response = await register(formData.userName, formData.email);
-      if (response && response.message) {
+      const registerResponse = await register(formData.userName, formData.email);
+      if (registerResponse && registerResponse.message) {
+        // Auto-login after successful registration
+        const loginResponse = await login(formData.email);
+        handleLoginSuccess(loginResponse);
         setFormData({ email: "", companyId: "", role: "customer", userName: "" });
         setError("");
         onClose();
-        onAction(response);
       }
     } catch (error) {
-      console.error("Register error:", error);
       setError(error?.message || "Registration failed. Please try again.");
     } finally {
       setIsSubmitting(false);
@@ -113,7 +125,6 @@ const Modal = ({
       return;
     }
 
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(formData.email)) {
       setError("Please enter a valid email (e.g., name@company.com)");
       return;
@@ -136,7 +147,6 @@ const Modal = ({
         onAction(response);
       }
     } catch (error) {
-      console.error("Add user to chat error:", error);
       setError(
         error?.message || "Failed to add user to chat. Please try again."
       );

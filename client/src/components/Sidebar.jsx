@@ -7,10 +7,6 @@ const Sidebar = ({ isOpen = false }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalType, setModalType] = useState("login"); // 'login', 'register', or 'addUser'
   const { user, logout, handleAddUser, companyParticipants } = useChat();
-  
-  const handleSwitchMode = (newMode) => {
-    setModalType(newMode);
-  };
   const timestamp = useMemo(
     () =>
       new Intl.DateTimeFormat("en", {
@@ -240,7 +236,6 @@ const Sidebar = ({ isOpen = false }) => {
           }
           onAction={() => {}}
           onClose={() => setIsModalOpen(false)}
-          onSwitchMode={handleSwitchMode}
         />
       ) : user?.role === "admin" ? (
         <Modal

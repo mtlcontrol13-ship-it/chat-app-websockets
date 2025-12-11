@@ -71,13 +71,28 @@ export const ChatProvider = ({ children }) => {
   };
 
   const handleAddUser = async (userData) => {
+    // Add a small delay to ensure the backend has processed the addition
+    await new Promise(resolve => setTimeout(resolve, 500));
+    
+    // Determine which companyId to use for fetching participants
+    let companyIdToFetch = user?.companyId;
+    
+    // If the added user is the current logged-in user, update their state with the new companyId
+    if (userData?.user?.email === user?.email) {
+      const updatedUser = {
+        ...user,
+        companyId: userData.user.companyId,
+        role: userData.user.role || user?.role,
+      };
+      setUser(updatedUser);
+      localStorage.setItem("user", JSON.stringify(updatedUser));
+      companyIdToFetch = userData.user.companyId;
+    }
+
     // After user is added, refresh the participant list
-    if (user?.companyId) {
+    if (companyIdToFetch) {
       try {
-        // Add a small delay to ensure the backend has processed the addition
-        await new Promise(resolve => setTimeout(resolve, 500));
-        
-        const response = await getCompanyUsers(user.companyId);
+        const response = await getCompanyUsers(companyIdToFetch);
         const users = response.users || response || [];
         setCompanyParticipants(users);
       } catch (error) {

@@ -1,5 +1,6 @@
 import express from "express";
-import { loginUser, registerUser, getCompanyUsers, addUserToChat } from "../controllers/authController.js";
+import { loginUser, registerUser, } from "../controllers/authController.js";
+import { addUserToChat, getCompanyUsers } from "../controllers/userController.js";
 
 const router = express.Router();
 

@@ -2,7 +2,7 @@ import { User } from "../models/User";
 
 export const addUserToChat = async (req, res) => {
     try {
-        const { email, currentUserEmail, companyId } = req.body;
+        const { email, currentUserEmail, companyId, role } = req.body;
 
         if (!email) {
             return res.status(400).json({ message: "Please enter an email address" });
@@ -32,6 +32,11 @@ export const addUserToChat = async (req, res) => {
         // Then check if user belongs to the specified company
         if (userByEmail.companyId !== companyId) {
             return res.status(400).json({ message: "This person is not part of your company. Please verify the Company ID and email." });
+        }
+
+        // Validate that the role provided matches the user's actual role
+        if (role && userByEmail.role !== role) {
+            return res.status(400).json({ message: `The user ${userByEmail.userName} has role "${userByEmail.role}", not "${role}". Please select the correct role.` });
         }
 
         // Return user details

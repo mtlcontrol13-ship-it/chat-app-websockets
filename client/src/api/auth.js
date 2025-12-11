@@ -1,13 +1,13 @@
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
-export const addUser = async (email, currentUserEmail, companyId) => {
+export const addUser = async (email, currentUserEmail, companyId, role) => {
     try {
         const response = await fetch(`${API_BASE_URL}/api/chats/addUser`, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
             },
-            body: JSON.stringify({ email, currentUserEmail, companyId })
+            body: JSON.stringify({ email, currentUserEmail, companyId, role })
         });
 
         const data = await response.json();

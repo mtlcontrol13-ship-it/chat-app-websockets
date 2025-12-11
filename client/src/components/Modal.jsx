@@ -16,7 +16,11 @@ const Modal = ({
   if (!open) return null;
 
   const formId = useId();
-  const [formData, setFormData] = useState({ email: "", companyId: "" });
+  const [formData, setFormData] = useState({
+    email: "",
+    companyId: "",
+    role: "customer",
+  });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState("");
 
@@ -40,7 +44,7 @@ const Modal = ({
     try {
       const response = await login(formData.email);
       handleLoginSuccess(response);
-      setFormData({ email: "", companyId: "" });
+      setFormData({ email: "", companyId: "", role: "customer" });
       setError("");
       onClose();
     } catch (error) {
@@ -77,11 +81,12 @@ const Modal = ({
       const response = await addUser(
         formData.email,
         user?.email,
-        formData.companyId
+        formData.companyId,
+        formData.role
       );
 
       if (response && response.message) {
-        setFormData({ email: "", companyId: "" });
+        setFormData({ email: "", companyId: "", role: "customer" });
         setError("");
         onClose();
         onAction(response);
@@ -142,26 +147,49 @@ const Modal = ({
                 />
               </div>
               {modalType === "addUser" && (
-                <div className="flex flex-col gap-1">
-                  <label
-                    className="text-sm text-(--text)"
-                    htmlFor={`${formId}-companyId`}
-                  >
-                    Company ID
-                  </label>
-                  <input
-                    id={`${formId}-companyId`}
-                    type="text"
-                    className="w-full px-3 py-2 rounded-lg border border-(--border) bg-(--bg) outline-none text-(--text)"
-                    placeholder="Company ID"
-                    value={formData.companyId}
-                    onChange={(e) =>
-                      setFormData({ ...formData, companyId: e.target.value })
-                    }
-                    disabled={isSubmitting}
-                    required
-                  />
-                </div>
+                <>
+                  <div className="flex flex-col gap-1">
+                    <label
+                      className="text-sm text-(--text)"
+                      htmlFor={`${formId}-companyId`}
+                    >
+                      Company ID
+                    </label>
+                    <input
+                      id={`${formId}-companyId`}
+                      type="text"
+                      className="w-full px-3 py-2 rounded-lg border border-(--border) bg-(--bg) outline-none text-(--text)"
+                      placeholder="Company ID"
+                      value={formData.companyId}
+                      onChange={(e) =>
+                        setFormData({ ...formData, companyId: e.target.value })
+                      }
+                      disabled={isSubmitting}
+                      required
+                    />
+                  </div>
+                  <div className="flex flex-col gap-1">
+                    <label
+                      className="text-sm text-(--text)"
+                      htmlFor={`${formId}-role`}
+                    >
+                      Role
+                    </label>
+                    <select
+                      id={`${formId}-role`}
+                      className="w-full px-3 py-2 rounded-lg border border-(--border) bg-(--bg) outline-none text-(--text)"
+                      value={formData.role}
+                      onChange={(e) =>
+                        setFormData({ ...formData, role: e.target.value })
+                      }
+                      disabled={isSubmitting}
+                      required
+                    >
+                      <option value="customer">Customer</option>
+                      <option value="driver">Driver</option>
+                    </select>
+                  </div>
+                </>
               )}
             </form>
           )}

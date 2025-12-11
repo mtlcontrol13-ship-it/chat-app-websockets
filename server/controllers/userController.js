@@ -5,27 +5,33 @@ export const addUserToChat = async (req, res) => {
         const { email, currentUserEmail, companyId } = req.body;
 
         if (!email) {
-            return res.status(400).json({ message: "Email is required" });
+            return res.status(400).json({ message: "Please enter an email address" });
         }
 
         // Check if user is trying to add themselves
         if (email === currentUserEmail) {
-            return res.status(400).json({ message: "You cannot add yourself to a chat" });
+            return res.status(400).json({ message: "You can't add yourself. Please enter someone else's email." });
         }
 
         if (!companyId) {
-            return res.status(400).json({ message: "Company ID is required" });
+            return res.status(400).json({ message: "Please enter your Company ID" });
+        }
+
+        // Validate UUID format (8-4-4-4-12 pattern)
+        const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+        if (!uuidRegex.test(companyId)) {
+            return res.status(400).json({ message: "The Company ID format looks incorrect. Please double-check and try again." });
         }
 
         // First check if user exists by email
         const userByEmail = await User.findOne({ email });
         if (!userByEmail) {
-            return res.status(404).json({ message: "User doesn't exist. Please ask them to register first." });
+            return res.status(404).json({ message: "This email is not registered. Please ask them to register first." });
         }
 
         // Then check if user belongs to the specified company
         if (userByEmail.companyId !== companyId) {
-            return res.status(400).json({ message: "User exists but doesn't belong to this company. Please verify the Company ID." });
+            return res.status(400).json({ message: "This person is not part of your company. Please verify the Company ID and email." });
         }
 
         // Return user details

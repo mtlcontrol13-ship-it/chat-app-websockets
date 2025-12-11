@@ -5,7 +5,7 @@ export const loginUser = async (req, res) => {
         const { email } = req.body;
 
         if (!email) {
-            return res.status(400).json({ message: "Email is required" });
+            return res.status(400).json({ message: "Please enter your email address" });
         }
 
         const existingUser = await User.findOne({
@@ -13,7 +13,7 @@ export const loginUser = async (req, res) => {
         }).populate('assignedTo', '_id userName email role')
 
         if (!existingUser) {
-            return res.status(404).json({ message: "User not found" });
+            return res.status(404).json({ message: "This email is not registered. Please check and try again." });
         }
 
         res.status(200).json({
@@ -36,12 +36,12 @@ export const registerUser = async (req, res) => {
     const { username, email } = req.body;
     try {
         if (!username || !email) {
-            return res.status(400).json({ message: "Username and email are required" });
+            return res.status(400).json({ message: "Please enter both username and email" });
         }
 
         const existingUser = await User.findOne({ email: email });
         if (existingUser) {
-            return res.status(400).json({ message: "Email already registered" });
+            return res.status(400).json({ message: "This email is already registered. Please use a different email." });
         }
 
         const newUser = new User({ username, email });

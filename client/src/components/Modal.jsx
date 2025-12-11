@@ -24,18 +24,18 @@ const Modal = ({
     setError("");
 
     if (!formData.email.trim()) {
-      setError("Email is required");
+      setError("Please enter an email address");
       return;
     }
 
     if (!formData.companyId.trim()) {
-      setError("Company ID is required");
+      setError("Please enter your Company ID");
       return;
     }
 
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(formData.email)) {
-      setError("Please enter a valid email address.");
+      setError("Please enter a valid email (e.g., name@company.com)");
       return;
     }
 

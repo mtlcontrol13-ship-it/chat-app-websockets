@@ -74,6 +74,9 @@ export const ChatProvider = ({ children }) => {
     // After user is added, refresh the participant list
     if (user?.companyId) {
       try {
+        // Add a small delay to ensure the backend has processed the addition
+        await new Promise(resolve => setTimeout(resolve, 500));
+        
         const response = await getCompanyUsers(user.companyId);
         const users = response.users || response || [];
         setCompanyParticipants(users);
@@ -81,7 +84,7 @@ export const ChatProvider = ({ children }) => {
         console.error("Failed to refresh company users:", error);
       }
     }
-  }
+  };
 
   return (
     <ChatContext.Provider

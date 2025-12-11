@@ -23,6 +23,11 @@ const Modal = ({
     e.preventDefault();
     setError("");
 
+    if (user?.role !== "admin") {
+      setError("Only admins can add users");
+      return;
+    }
+
     if (!formData.email.trim()) {
       setError("Please enter an email address");
       return;
@@ -42,7 +47,11 @@ const Modal = ({
     setIsSubmitting(true);
 
     try {
-      const response = await addUser(formData.email,  user?.email, formData.companyId);
+      const response = await addUser(
+        formData.email,
+        user?.email,
+        formData.companyId
+      );
 
       if (response && response.message) {
         setFormData({ email: "", companyId: "" });
@@ -52,7 +61,9 @@ const Modal = ({
       }
     } catch (error) {
       console.error("Add user to chat error:", error);
-      setError(error?.message || "Failed to add user to chat. Please try again.");
+      setError(
+        error?.message || "Failed to add user to chat. Please try again."
+      );
     } finally {
       setIsSubmitting(false);
     }
@@ -61,9 +72,7 @@ const Modal = ({
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center">
       <div className="absolute inset-0 bg-black/50" onClick={onClose} />
-      <div
-        className="relative w-full max-w-md rounded-2xl shadow-lg p-6 bg-(--panel) text-(--text)"
-      >
+      <div className="relative w-full max-w-md rounded-2xl shadow-lg p-6 bg-(--panel) text-(--text)">
         <div className="flex items-center justify-between mb-4">
           <h3 className="text-lg font-semibold">{title}</h3>
           <button
@@ -83,7 +92,10 @@ const Modal = ({
                 </div>
               )}
               <div className="flex flex-col gap-1">
-                <label className="text-sm text-(--text)" htmlFor={`${formId}-email`}>
+                <label
+                  className="text-sm text-(--text)"
+                  htmlFor={`${formId}-email`}
+                >
                   Email
                 </label>
                 <input
@@ -92,13 +104,18 @@ const Modal = ({
                   className="w-full px-3 py-2 rounded-lg border border-(--border) bg-(--bg) outline-none text-(--text)"
                   placeholder="john@example.com"
                   value={formData.email}
-                  onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                  onChange={(e) =>
+                    setFormData({ ...formData, email: e.target.value })
+                  }
                   disabled={isSubmitting}
                   required
                 />
               </div>
               <div className="flex flex-col gap-1">
-                <label className="text-sm text-(--text)" htmlFor={`${formId}-companyId`}>
+                <label
+                  className="text-sm text-(--text)"
+                  htmlFor={`${formId}-companyId`}
+                >
                   Company ID
                 </label>
                 <input
@@ -107,7 +124,9 @@ const Modal = ({
                   className="w-full px-3 py-2 rounded-lg border border-(--border) bg-(--bg) outline-none text-(--text)"
                   placeholder="Company ID"
                   value={formData.companyId}
-                  onChange={(e) => setFormData({ ...formData, companyId: e.target.value })}
+                  onChange={(e) =>
+                    setFormData({ ...formData, companyId: e.target.value })
+                  }
                   disabled={isSubmitting}
                   required
                 />

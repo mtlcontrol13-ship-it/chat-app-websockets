@@ -1,4 +1,4 @@
-import { createContext, useContext, useState, useEffect } from "react";
+import { createContext, useContext, useState, useEffect, useCallback, useRef } from "react";
 import { useWebSocketChat } from "../hooks/useWebSocketChat";
 import { useTheme } from "../hooks/useTheme";
 import { getCompanyUsers } from "../api/auth";
@@ -34,6 +34,7 @@ export const ChatProvider = ({ children }) => {
   }, []);
 
   // Fetch company users when user is authenticated
+  // Also poll for companyId assignment when user is newly registered
   useEffect(() => {
     const fetchCompanyUsers = async () => {
       if (user?.companyId) {
@@ -51,6 +52,31 @@ export const ChatProvider = ({ children }) => {
 
     fetchCompanyUsers();
   }, [user?.companyId]);
+
+  // Poll for user updates when newly registered (companyId: null)
+  useEffect(() => {
+    if (!user || user?.companyId) {
+      // Don't poll if user doesn't exist or already has companyId
+      return;
+    }
+
+    const pollInterval = setInterval(async () => {
+      try {
+        const storedUser = localStorage.getItem("user");
+        if (storedUser) {
+          const parsedUser = JSON.parse(storedUser);
+          // Check if admin has assigned a companyId
+          if (parsedUser?.companyId && parsedUser?.companyId !== user?.companyId) {
+            setUser(parsedUser);
+          }
+        }
+      } catch (error) {
+        console.error("Failed to poll user updates:", error);
+      }
+    }, 2000); // Poll every 2 seconds
+
+    return () => clearInterval(pollInterval);
+  }, [user]);
 
   // Pass authenticated user to WebSocket hook
   const chat = useWebSocketChat({ user });
@@ -70,7 +96,7 @@ export const ChatProvider = ({ children }) => {
     }
   };
 
-  const handleAddUser = async (userData) => {
+  const handleAddUser = useCallback(async (userData) => {
     // After user is added, refresh the participant list
     if (user?.companyId) {
       try {
@@ -84,7 +110,7 @@ export const ChatProvider = ({ children }) => {
         console.error("Failed to refresh company users:", error);
       }
     }
-  };
+  }, [user?.companyId]);
 
   return (
     <ChatContext.Provider

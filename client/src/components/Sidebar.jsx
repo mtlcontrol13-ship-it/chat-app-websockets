@@ -55,7 +55,7 @@ const Sidebar = ({ isOpen = false }) => {
             // Show the customer they're assigned to
             if (
               participant.role === "customer" &&
-              participant._id === user.assignedTo
+              participant._id === user.assignedTo?._id
             ) {
               return true;
             }

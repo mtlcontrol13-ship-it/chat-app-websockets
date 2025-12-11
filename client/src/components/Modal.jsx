@@ -25,8 +25,6 @@ const Modal = ({
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState("");
   
-  console.log("Modal rendered with modalType:", modalType, "internalMode:", internalMode);
-  
   if (!open) return null;
   
   // Use internalMode for switching between login/register
@@ -279,7 +277,6 @@ const Modal = ({
                 <button
                   type="button"
                   onClick={(e) => {
-                    console.log("Create one clicked");
                     e.preventDefault();
                     e.stopPropagation();
                     setFormData({ email: "", companyId: "", role: "customer", userName: "" });
@@ -297,7 +294,6 @@ const Modal = ({
                 <button
                   type="button"
                   onClick={(e) => {
-                    console.log("Login here clicked");
                     e.preventDefault();
                     e.stopPropagation();
                     setFormData({ email: "", companyId: "", role: "customer", userName: "" });

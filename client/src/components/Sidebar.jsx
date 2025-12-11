@@ -9,12 +9,8 @@ const Sidebar = ({ isOpen = false }) => {
   const { user, logout, handleAddUser, companyParticipants } = useChat();
   
   const handleSwitchMode = (newMode) => {
-    console.log("handleSwitchMode called with:", newMode);
-    console.log("Current user:", user);
     setModalType(newMode);
   };
-  
-  console.log("Sidebar render - user:", user, "isModalOpen:", isModalOpen, "modalType:", modalType);
   const timestamp = useMemo(
     () =>
       new Intl.DateTimeFormat("en", {

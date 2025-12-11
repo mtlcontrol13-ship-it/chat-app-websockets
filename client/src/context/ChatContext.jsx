@@ -78,8 +78,9 @@ export const ChatProvider = ({ children }) => {
     return () => clearInterval(pollInterval);
   }, [user]);
 
-  // Pass authenticated user to WebSocket hook
-  const chat = useWebSocketChat({ user });
+  // Pass authenticated user to WebSocket hook ONLY if they have a companyId
+  // Users without companyId cannot access the chat until admin adds them
+  const chat = useWebSocketChat({ user: user?.companyId ? user : null });
   const theme = useTheme();
 
   const logout = () => {

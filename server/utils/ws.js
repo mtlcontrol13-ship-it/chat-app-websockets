@@ -1,4 +1,5 @@
 import { WebSocket, WebSocketServer } from "ws";
+import { User } from "../models/User.js";
 
 const normalizeIncoming = (data) => {
   if (data instanceof ArrayBuffer) {
@@ -39,7 +40,7 @@ const setupWebSocketServer = (httpServer) => {
     ws.userName = null;
     ws.userId = null;
 
-    ws.on("message", (rawData) => {
+    ws.on("message", async (rawData) => {
       const data = normalizeIncoming(rawData);
 
       try {
@@ -64,6 +65,20 @@ const setupWebSocketServer = (httpServer) => {
             userId: msg.userId,
             joinedAt: Date.now(),
           });
+          
+          // Record first chat join timestamp in database if not already recorded
+          if (msg.userId) {
+            try {
+              const user = await User.findById(msg.userId);
+              if (user && !user.firstChatJoinAt) {
+                user.firstChatJoinAt = new Date();
+                await user.save();
+              }
+            } catch (error) {
+              console.error("Failed to record first chat join:", error);
+            }
+          }
+          
           broadcastParticipants();
           return;
         }

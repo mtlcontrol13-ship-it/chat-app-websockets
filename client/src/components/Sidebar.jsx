@@ -202,9 +202,10 @@ const Sidebar = ({ isOpen = false }) => {
 
       <Modal
         open={isModalOpen}
-        title="Add New User"
-        actionLabel="Add User"
-        onAction={handleAddUser}
+        title={user?.role === "admin" ? "Add New User" : "Login"}
+        modalType={user?.role === "admin" ? "addUser" : "login"}
+        actionLabel={user?.role === "admin" ? "Add User" : "Login"}
+        onAction={user?.role === "admin" ? handleAddUser : () => {}}
         onClose={() => setIsModalOpen(false)}
       />
     </>

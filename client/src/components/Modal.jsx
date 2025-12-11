@@ -1,6 +1,6 @@
 import { X } from "lucide-react";
 import { useId, useState } from "react";
-import { addUser } from "../api/auth";
+import { addUser, login } from "../api/auth";
 import { useChat } from "../context/ChatContext";
 
 const Modal = ({
@@ -8,10 +8,11 @@ const Modal = ({
   title = "Modal",
   children,
   actionLabel = "OK",
+  modalType = "login", // 'login' or 'addUser'
   onAction = () => {},
   onClose = () => {},
 }) => {
-  const { user } = useChat();
+  const { user, handleLoginSuccess } = useChat();
   if (!open) return null;
 
   const formId = useId();
@@ -19,14 +20,40 @@ const Modal = ({
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState("");
 
-  const handleSubmit = async (e) => {
+  const handleLoginSubmit = async (e) => {
     e.preventDefault();
     setError("");
 
-    if (user?.role !== "admin") {
-      setError("Only admins can add users");
+    if (!formData.email.trim()) {
+      setError("Please enter an email address");
       return;
     }
+
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(formData.email)) {
+      setError("Please enter a valid email (e.g., name@company.com)");
+      return;
+    }
+
+    setIsSubmitting(true);
+
+    try {
+      const response = await login(formData.email);
+      handleLoginSuccess(response);
+      setFormData({ email: "", companyId: "" });
+      setError("");
+      onClose();
+    } catch (error) {
+      console.error("Login error:", error);
+      setError(error?.message || "Login failed. Please try again.");
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  const handleAddUserSubmit = async (e) => {
+    e.preventDefault();
+    setError("");
 
     if (!formData.email.trim()) {
       setError("Please enter an email address");
@@ -68,6 +95,9 @@ const Modal = ({
       setIsSubmitting(false);
     }
   };
+
+  const handleSubmit =
+    modalType === "login" ? handleLoginSubmit : handleAddUserSubmit;
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center">
@@ -111,26 +141,28 @@ const Modal = ({
                   required
                 />
               </div>
-              <div className="flex flex-col gap-1">
-                <label
-                  className="text-sm text-(--text)"
-                  htmlFor={`${formId}-companyId`}
-                >
-                  Company ID
-                </label>
-                <input
-                  id={`${formId}-companyId`}
-                  type="text"
-                  className="w-full px-3 py-2 rounded-lg border border-(--border) bg-(--bg) outline-none text-(--text)"
-                  placeholder="Company ID"
-                  value={formData.companyId}
-                  onChange={(e) =>
-                    setFormData({ ...formData, companyId: e.target.value })
-                  }
-                  disabled={isSubmitting}
-                  required
-                />
-              </div>
+              {modalType === "addUser" && (
+                <div className="flex flex-col gap-1">
+                  <label
+                    className="text-sm text-(--text)"
+                    htmlFor={`${formId}-companyId`}
+                  >
+                    Company ID
+                  </label>
+                  <input
+                    id={`${formId}-companyId`}
+                    type="text"
+                    className="w-full px-3 py-2 rounded-lg border border-(--border) bg-(--bg) outline-none text-(--text)"
+                    placeholder="Company ID"
+                    value={formData.companyId}
+                    onChange={(e) =>
+                      setFormData({ ...formData, companyId: e.target.value })
+                    }
+                    disabled={isSubmitting}
+                    required
+                  />
+                </div>
+              )}
             </form>
           )}
         </div>

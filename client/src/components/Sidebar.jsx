@@ -146,8 +146,8 @@ const Sidebar = ({ isOpen = false }) => {
                     <p className="font-semibold truncate">{contact.userName}</p>
                   </div>
                   <div className="flex items-center gap-1">
-                    <span className="text-xs text-green-600 font-medium">
-                      Online
+                    <span className="text-xs text-(--muted) font-medium">
+                      Click to Chat
                     </span>
                   </div>
                 </div>

@@ -76,6 +76,7 @@ const seedUsers = async () => {
             { driverEmail: 'driver3@example.com', customerEmail: 'customer3@example.com' },
             { driverEmail: 'driver2@example.com', customerEmail: 'customer2@example.com' },
             { driverEmail: 'driver4@example.com', customerEmail: 'customer4@example.com' },
+            { driverEmail: 'qwer@example.com', customerEmail: 'asdf@example.com' }
         ];
 
         for (const { driverEmail, customerEmail } of assignments) {

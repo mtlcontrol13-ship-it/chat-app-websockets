@@ -1,6 +1,6 @@
 import ChatBubble from "./ChatBubble";
 import { useChat } from "../context/ChatContext";
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 
 const MessageList = ({ participantId }) => {
   const {
@@ -16,10 +16,14 @@ const MessageList = ({ participantId }) => {
     messagesEndRef,
   } = useChat();
 
+  const containerRef = useRef(null);
+
   // Auto-scroll to bottom when messages change
   useEffect(() => {
-    messagesEndRef?.current?.scrollIntoView({ behavior: "smooth" });
-  }, [messages, participantId, messagesEndRef]);
+    if (containerRef.current) {
+      containerRef.current.scrollTop = containerRef.current.scrollHeight;
+    }
+  }, [messages, participantId]);
 
   // Filter messages for this participant conversation
   // In individual chat mode: only show messages that involve this participant
@@ -39,6 +43,7 @@ const MessageList = ({ participantId }) => {
 
   return (
     <div
+      ref={containerRef}
       className="flex-1 overflow-y-auto px-4 py-6 space-y-4 min-h-0 bg-(--bg) flex flex-col"
     >
       {participantMessages.length === 0 ? (

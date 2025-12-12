@@ -31,12 +31,16 @@ const Modal = ({
   useEffect(() => {
     if (open) {
       setInternalMode(modalType);
+      // Auto-populate companyId for addUser modal
+      if (modalType === "addUser" && user?.companyId) {
+        setFormData(prev => ({ ...prev, companyId: user.companyId }));
+      }
     } else {
       // Clear form data when modal closes
       setFormData({ email: "", companyId: "", role: "customer", userName: "" });
       setError("");
     }
-  }, [open, modalType]);
+  }, [open, modalType, user?.companyId]);
   
   if (!open) return null;
   
@@ -243,13 +247,13 @@ const Modal = ({
                     <input
                       id={`${formId}-companyId`}
                       type="text"
-                      className="w-full px-3 py-2 rounded-lg border border-(--border) bg-(--bg) outline-none text-(--text)"
+                      className="w-full px-3 py-2 rounded-lg border border-(--border) bg-(--bg) outline-none text-(--muted)"
                       placeholder="Company ID"
                       value={formData.companyId}
                       onChange={(e) =>
                         setFormData({ ...formData, companyId: e.target.value })
                       }
-                      disabled={isSubmitting}
+                      disabled
                       required
                     />
                   </div>

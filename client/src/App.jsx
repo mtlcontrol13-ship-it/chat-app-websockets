@@ -1,13 +1,12 @@
 // App.jsx
 import { useState } from "react";
+import { Routes, Route } from "react-router-dom";
 import { ChatProvider, useChat } from "./context/ChatContext";
 import Sidebar from "./components/Sidebar";
-import Header from "./components/Header";
-import MessageList from "./components/MessageList";
-import MessageInput from "./components/MessageInput";
+import ChatView from "./views/ChatView";
 import Modal from "./components/Modal";
 
-const AppContent = () => {
+const ChatLayout = () => {
   const { user, isLoginModalOpen, setIsLoginModalOpen, handleLoginSuccess } = useChat();
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
@@ -55,9 +54,7 @@ const AppContent = () => {
   }
 
   return (
-    <div
-      className="flex h-screen overflow-hidden bg-(--bg)"
-    >
+    <div className="flex h-screen overflow-hidden bg-(--bg)">
       {/* Mobile overlay */}
       {isSidebarOpen && (
         <div
@@ -71,13 +68,19 @@ const AppContent = () => {
         onClose={() => setIsSidebarOpen(false)}
       />
 
-      <div
-        className="flex flex-col flex-1 min-h-0 text-(--text)"
-      >
-        <Header onToggleSidebar={() => setIsSidebarOpen((prev) => !prev)} />
-        <MessageList />
-        <MessageInput />
-      </div>
+      <Routes>
+        <Route path="/:participantId" element={
+          <ChatView onChatOpen={() => setIsSidebarOpen(false)} />
+        } />
+        <Route path="/" element={
+          <div className="flex-1 flex items-center justify-center text-(--muted)">
+            <div className="text-center">
+              <p className="text-lg mb-4">Select a participant to start chatting</p>
+              <p className="text-sm">Click on a participant from the sidebar</p>
+            </div>
+          </div>
+        } />
+      </Routes>
     </div>
   );
 };
@@ -85,7 +88,7 @@ const AppContent = () => {
 export default function App() {
   return (
     <ChatProvider>
-      <AppContent />
+      <ChatLayout />
     </ChatProvider>
   );
 }

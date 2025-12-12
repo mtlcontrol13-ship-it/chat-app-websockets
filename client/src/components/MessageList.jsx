@@ -1,7 +1,7 @@
 import ChatBubble from "./ChatBubble";
 import { useChat } from "../context/ChatContext";
 
-const MessageList = () => {
+const MessageList = ({ participantId }) => {
   const {
     messages,
     username,
@@ -15,11 +15,32 @@ const MessageList = () => {
     messagesEndRef,
   } = useChat();
 
+  // Filter messages for this participant conversation
+  // In individual chat mode: only show messages that involve this participant
+  // A message is relevant if:
+  //   1. It was sent by this user (message doesn't have participantId, or participantId matches)
+  //   2. It was sent TO this user (message.participantId matches this participant's ID)
+  // In global mode: show all messages
+  const participantMessages = participantId 
+    ? messages.filter(msg => {
+        // Skip system messages for individual chats
+        if (msg.type === "status") return false;
+        // Show messages that belong to this conversation:
+        // Either the message is from us (no participantId set) OR it's sent to this participant
+        return !msg.participantId || msg.participantId === participantId;
+      })
+    : messages;
+
   return (
     <div
-      className="flex-1 overflow-y-auto px-4 py-6 space-y-4 min-h-0 bg-(--bg)"
+      className="flex-1 overflow-y-auto px-4 py-6 space-y-4 min-h-0 bg-(--bg) flex flex-col"
     >
-      {messages.map((msg) => {
+      {participantMessages.length === 0 ? (
+        <div className="flex items-center justify-center h-full text-(--muted) text-sm">
+          <p>No messages yet. Start the conversation!</p>
+        </div>
+      ) : null}
+      {participantMessages.map((msg) => {
         if (msg.type === "status") {
           return (
             <div key={msg.id} className="flex justify-center">

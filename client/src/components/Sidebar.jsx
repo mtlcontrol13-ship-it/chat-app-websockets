@@ -1,9 +1,11 @@
 import { useMemo, useState } from "react";
 import { LogOut, PlusIcon, User } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 import { useChat } from "../context/ChatContext";
 import Modal from "./Modal";
 
 const Sidebar = ({ isOpen = false }) => {
+  const navigate = useNavigate();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalType, setModalType] = useState("login"); // 'login', 'register', or 'addUser'
   const { user, logout, handleAddUser, companyParticipants } = useChat();
@@ -63,15 +65,8 @@ const Sidebar = ({ isOpen = false }) => {
           }
 
           return false;
-        })
-        .map((participant) => ({
-          name: participant.userName,
-          email: participant.email,
-          role: participant.role,
-          lastMessage: "Tap to start chatting",
-          time: timestamp,
-        })),
-    [companyParticipants, timestamp, user]
+        }),
+    [companyParticipants, user]
   );
 
   const avatarStyle = (name) => {
@@ -124,17 +119,18 @@ const Sidebar = ({ isOpen = false }) => {
           <div className="space-y-2 text-sm">
             {contactList.map((contact) => (
               <div
-                key={contact.name}
-                className="flex items-center gap-3 px-3 py-2 rounded-2xl border bg-(--bg) border-(--border) cursor-pointer transition hover:translate-x-1"
+                key={contact._id}
+                onClick={() => navigate(`/${contact._id}`)}
+                className="flex items-center gap-3 px-3 py-2 rounded-2xl border bg-(--bg) border-(--border) cursor-pointer transition hover:translate-x-1 hover:bg-(--panel)"
               >
                 <div className="relative">
                   <div
                     className="w-10 h-10 rounded-full flex items-center justify-center text-sm font-semibold shrink-0 relative overflow-hidden"
-                    style={avatarStyle(contact.name)}
+                    style={avatarStyle(contact.userName)}
                   >
                     <img
-                      src={avatarUrl(contact.name)}
-                      alt={`${contact.name} avatar`}
+                      src={avatarUrl(contact.userName)}
+                      alt={`${contact.userName} avatar`}
                       className="absolute inset-0 w-full h-full object-cover"
                       onError={(e) => {
                         e.currentTarget.style.display = "none";
@@ -147,10 +143,7 @@ const Sidebar = ({ isOpen = false }) => {
 
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center justify-between gap-2">
-                    <p className="font-semibold truncate">{contact.name}</p>
-                    <span className="text-[11px] whitespace-nowrap text-(--muted)">
-                      {contact.time}
-                    </span>
+                    <p className="font-semibold truncate">{contact.userName}</p>
                   </div>
                   <div className="flex items-center gap-1">
                     <span className="text-xs text-green-600 font-medium">

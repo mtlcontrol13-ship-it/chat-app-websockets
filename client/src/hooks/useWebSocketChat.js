@@ -249,7 +249,7 @@ export const useWebSocketChat = ({ user = null } = {}) => {
   }, [messages, isConnected, username]);
 
   const sendMessage = useCallback(
-    (e) => {
+    (e, participantId) => {
       e.preventDefault();
       if (!input.trim() || !isConnected || !socketRef.current) return;
 
@@ -261,6 +261,7 @@ export const useWebSocketChat = ({ user = null } = {}) => {
         timestamp: Date.now(),
         edited: false,
         seen: false,
+        participantId, // Include participant ID for individual chats
       };
 
       socketRef.current.send(JSON.stringify(message));

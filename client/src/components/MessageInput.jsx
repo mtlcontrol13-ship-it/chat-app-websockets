@@ -1,12 +1,17 @@
 import { Send } from "lucide-react";
 import { useChat } from "../context/ChatContext";
 
-const MessageInput = () => {
+const MessageInput = ({ participantId }) => {
   const { input, setInput, sendMessage, isConnected } = useChat();
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    sendMessage(e, participantId);
+  };
 
   return (
     <form
-      onSubmit={sendMessage}
+      onSubmit={handleSubmit}
       className="border-t p-4 bg-(--panel) border-(--border)"
     >
       <div className="flex gap-3 max-w-4xl mx-auto">

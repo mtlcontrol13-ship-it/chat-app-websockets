@@ -1,0 +1,24 @@
+{
+  "name": "ws-test2",
+  "version": "1.0.0",
+  "description": "Created a simple chat application using native WebSockets in Node.js without any external libraries. This project demonstrates how to set up a WebSocket server and client for real-time communication. THis is the task given to me during my internship to research WebSockets.",
+  "main": "index.js",
+  "scripts": {
+    "dev": "concurrently -n \"server,client\" -c \"green,blue\" \"cd server && bun run dev\" \"cd client && bun run dev\"",
+    "start": "concurrently -n \"server,client\" -c \"green,blue\" \"cd server && bun run start\" \"cd client && bun run dev\""
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mtlcontrol13-ship-it/chat-app-websockets.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/mtlcontrol13-ship-it/chat-app-websockets/issues"
+  },
+  "homepage": "https://github.com/mtlcontrol13-ship-it/chat-app-websockets#readme",
+  "dependencies": {
+    "concurrently": "^9.2.1"
+  }
+}

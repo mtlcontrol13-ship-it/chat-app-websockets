@@ -1,5 +1,6 @@
 import ChatBubble from "./ChatBubble";
 import { useChat } from "../context/ChatContext";
+import { useEffect } from "react";
 
 const MessageList = ({ participantId }) => {
   const {
@@ -14,6 +15,11 @@ const MessageList = ({ participantId }) => {
     deleteMessage,
     messagesEndRef,
   } = useChat();
+
+  // Auto-scroll to bottom when messages change
+  useEffect(() => {
+    messagesEndRef?.current?.scrollIntoView({ behavior: "smooth" });
+  }, [messages, participantId, messagesEndRef]);
 
   // Filter messages for this participant conversation
   // In individual chat mode: only show messages that involve this participant

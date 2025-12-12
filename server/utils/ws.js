@@ -152,12 +152,19 @@ const setupWebSocketServer = (httpServer) => {
             }
           }
 
+          // Prepare message for sender (participantId = recipient)
+          const msgForSender = { ...msg, participantId: msg.participantId };
+          
+          // Prepare message for recipient (participantId = sender)
+          const msgForRecipient = { ...msg, participantId: ws.userId };
+
           // Send to sender's connection to confirm message was sent
           if (ws.readyState === WebSocket.OPEN) {
-            ws.send(JSON.stringify(msg));
+            ws.send(JSON.stringify(msgForSender));
           }
+          
           // Send to recipient
-          const recipientFound = sendToRecipient(msg, msg.participantId);
+          const recipientFound = sendToRecipient(msgForRecipient, msg.participantId);
           if (!recipientFound) {
             console.log(`Recipient ${msg.participantId} not connected, message will be delivered when they connect`);
           }

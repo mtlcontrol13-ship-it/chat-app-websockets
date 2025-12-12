@@ -41,13 +41,13 @@ const ChatView = ({ onChatOpen }) => {
       <div className="px-4 py-4 border-b border-(--border) bg-(--panel) flex items-center gap-3">
         <button
           onClick={() => navigate("/")}
-          className="p-2 hover:bg-(--bg) rounded-lg transition-colors lg:hidden"
+          className="p-2 hover:bg-(--bg) rounded-lg transition-colors cursor-pointer"
         >
           <ArrowLeft className="w-5 h-5" />
         </button>
         <div className="flex-1">
           <h2 className="font-semibold text-lg">{participant.userName}</h2>
-          <p className="text-xs text-green-500 font-medium">Online • {participant.role}</p>
+          <p className="text-xs text-(--muted) font-medium uppercase">{participant.role}</p>
         </div>
       </div>
       

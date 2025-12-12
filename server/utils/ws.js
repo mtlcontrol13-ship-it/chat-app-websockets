@@ -131,6 +131,58 @@ const setupWebSocketServer = (httpServer) => {
           ws.userName = msg.username;
         }
 
+        // Handle edit messages - update in database
+        if (msg.type === "edit" && msg.id) {
+          try {
+            await Message.updateOne(
+              { id: msg.id },
+              { 
+                text: msg.text,
+                edited: true,
+                timestamp: msg.timestamp || Date.now()
+              }
+            );
+            console.log(`Updated message ${msg.id}`);
+            // Broadcast edit to all connected clients
+            broadcast(msg);
+          } catch (error) {
+            console.error("Error updating message:", error);
+          }
+          return;
+        }
+
+        // Handle delete messages - delete from database
+        if (msg.type === "delete" && msg.id) {
+          try {
+            await Message.deleteOne({ id: msg.id });
+            console.log(`Deleted message ${msg.id}`);
+            // Broadcast delete to all connected clients
+            broadcast(msg);
+          } catch (error) {
+            console.error("Error deleting message:", error);
+          }
+          return;
+        }
+
+        // Handle seen status - update in database
+        if (msg.type === "seen" && msg.id) {
+          try {
+            await Message.updateOne(
+              { id: msg.id },
+              { 
+                seen: true,
+                seenAt: msg.seenAt || new Date()
+              }
+            );
+            console.log(`Marked message ${msg.id} as seen`);
+            // Broadcast seen status to all connected clients
+            broadcast(msg);
+          } catch (error) {
+            console.error("Error updating seen status:", error);
+          }
+          return;
+        }
+
         // Handle individual messages (only send to recipient and sender)
         if (msg.participantId) {
           // Save individual message to database

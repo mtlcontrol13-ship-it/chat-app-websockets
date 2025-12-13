@@ -23,6 +23,7 @@ app.use('/api', router);
 // Tiny health check endpoint
 app.get('/health', (req, res) => {
   res.status(200).send('OK');
+  console.log('Received health check request');
 });
 
 // 404 for all other HTTP requests

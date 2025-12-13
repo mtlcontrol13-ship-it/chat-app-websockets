@@ -9,7 +9,7 @@ import MessageInput from "../components/MessageInput";
 const ChatView = ({ onChatOpen }) => {
   const { participantId } = useParams();
   const navigate = useNavigate();
-  const { user, companyParticipants } = useChat();
+  const { user, companyParticipants, latencyMs, isConnected } = useChat();
   const { isDark, toggleTheme } = useTheme();
 
   // Close sidebar when opening a chat on mobile
@@ -51,13 +51,21 @@ const ChatView = ({ onChatOpen }) => {
           <h2 className="font-semibold text-lg">{participant.userName}</h2>
           <p className="text-xs text-(--muted) font-medium uppercase">{participant.role}</p>
         </div>
-        <button
-          onClick={toggleTheme}
-          className="p-2 hover:bg-(--bg) rounded-lg transition-colors cursor-pointer"
-          aria-label="Toggle theme"
-        >
-          {isDark ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
-        </button>
+        <div className="flex items-center gap-2">
+          {isConnected && latencyMs !== null && (
+            <div className="text-xs text-(--muted) flex items-center gap-1">
+              <span className="w-2 h-2 rounded-full bg-green-500"></span>
+              <span>{latencyMs}ms</span>
+            </div>
+          )}
+          <button
+            onClick={toggleTheme}
+            className="p-2 hover:bg-(--bg) rounded-lg transition-colors cursor-pointer"
+            aria-label="Toggle theme"
+          >
+            {isDark ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
+          </button>
+        </div>
       </div>
       
       <MessageList participantId={participantId} />

@@ -1,7 +1,8 @@
 import { useParams, useNavigate } from "react-router-dom";
 import { useEffect } from "react";
-import { ArrowLeft } from "lucide-react";
+import { ArrowLeft, Sun, Moon } from "lucide-react";
 import { useChat } from "../context/ChatContext";
+import { useTheme } from "../hooks/useTheme";
 import MessageList from "../components/MessageList";
 import MessageInput from "../components/MessageInput";
 
@@ -9,6 +10,7 @@ const ChatView = ({ onChatOpen }) => {
   const { participantId } = useParams();
   const navigate = useNavigate();
   const { user, companyParticipants } = useChat();
+  const { isDark, toggleTheme } = useTheme();
 
   // Close sidebar when opening a chat on mobile
   useEffect(() => {
@@ -49,6 +51,13 @@ const ChatView = ({ onChatOpen }) => {
           <h2 className="font-semibold text-lg">{participant.userName}</h2>
           <p className="text-xs text-(--muted) font-medium uppercase">{participant.role}</p>
         </div>
+        <button
+          onClick={toggleTheme}
+          className="p-2 hover:bg-(--bg) rounded-lg transition-colors cursor-pointer"
+          aria-label="Toggle theme"
+        >
+          {isDark ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
+        </button>
       </div>
       
       <MessageList participantId={participantId} />

@@ -1,6 +1,7 @@
 // App.jsx
 import { useState } from "react";
-import { Routes, Route } from "react-router-dom";
+import { Menu } from "lucide-react";
+import { Routes, Route, useLocation } from "react-router-dom";
 import { ChatProvider, useChat } from "./context/ChatContext";
 import Sidebar from "./components/Sidebar";
 import ChatView from "./views/ChatView";
@@ -9,6 +10,8 @@ import Modal from "./components/Modal";
 const ChatLayout = () => {
   const { user, isLoginModalOpen, setIsLoginModalOpen, handleLoginSuccess } = useChat();
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const location = useLocation();
+  const isChatOpen = location.pathname !== "/";
 
   if (!user) {
     return (
@@ -61,6 +64,19 @@ const ChatLayout = () => {
           className="fixed inset-0 z-30 bg-black/40 lg:hidden"
           onClick={() => setIsSidebarOpen(false)}
         />
+      )}
+
+      {/* Mobile sidebar toggle */}
+      {!isSidebarOpen && !isChatOpen && (
+        <button
+          type="button"
+          className="fixed top-4 left-4 z-40 lg:hidden px-3 py-2 rounded-full border border-(--border) bg-(--panel) text-(--text) shadow-md flex items-center gap-2 active:scale-[0.98] transition"
+          onClick={() => setIsSidebarOpen(true)}
+          aria-label="Open chats"
+        >
+          <Menu className="w-5 h-5" />
+          <span className="text-sm font-semibold">Chats</span>
+        </button>
       )}
 
       <Sidebar

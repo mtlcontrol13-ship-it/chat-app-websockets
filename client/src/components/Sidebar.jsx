@@ -89,11 +89,11 @@ const Sidebar = ({ isOpen = false }) => {
   return (
     <>
       <aside
-        className={`h-full lg:h-screen flex flex-col border-r w-72 max-w-[80%] bg-(--panel) text-(--text) transition-transform transform z-40 overflow-y-auto border-(--border) ${
+        className={`h-full lg:h-screen flex flex-col border-r w-72 max-w-[80%] bg-(--panel) text-(--text) transition-transform transform z-40 border-(--border) ${
           isOpen ? "translate-x-0" : "-translate-x-full"
         } fixed inset-y-0 left-0 lg:static lg:translate-x-0 lg:w-72 lg:max-w-none`}
       >
-        <div className="px-4 py-6 border-b border-(--border) flex items-center justify-between">
+        <div className="px-4 py-6 border-b border-(--border) flex items-center justify-between shrink-0">
           <h2 className="text-3xl font-bold">Chats</h2>
           {user?.role === "admin" && (
             <button
@@ -109,7 +109,7 @@ const Sidebar = ({ isOpen = false }) => {
           )}
         </div>
 
-        <div className="px-4 pt-2 pb-4 space-y-3 flex-1">
+        <div className="px-4 pt-2 pb-4 space-y-3 flex-1 min-h-0 overflow-y-auto">
           <p className="text-xs font-semibold mb-2 flex items-center justify-between text-(--muted)">
             <span>Participants</span>
             <span className="text-[11px] text-(--muted)">
@@ -156,7 +156,7 @@ const Sidebar = ({ isOpen = false }) => {
           </div>
         </div>
 
-        <div className="p-4 border-t border-(--border) space-y-3">
+        <div className="p-4 border-t border-(--border) space-y-3 shrink-0">
           {user ? (
             <>
               <div className="px-4 py-3 rounded-lg border bg-(--bg) border-(--border)">

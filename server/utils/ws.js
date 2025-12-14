@@ -18,12 +18,20 @@ const setupWebSocketServer = (httpServer) => {
   const wss = new WebSocketServer({ server: httpServer });
   const connectedUsers = new Map(); // Track online users
 
-  const broadcast = (data) => {
-    const payload = JSON.stringify(data);
-    for (const client of wss.clients) {
+  const safeSend = (client, payload) => {
+    try {
       if (client.readyState === WebSocket.OPEN) {
         client.send(payload);
       }
+    } catch (err) {
+      console.error("WS send failed", err);
+    }
+  };
+
+  const broadcast = (data) => {
+    const payload = JSON.stringify(data);
+    for (const client of wss.clients) {
+      safeSend(client, payload);
     }
   };
 
@@ -31,8 +39,8 @@ const setupWebSocketServer = (httpServer) => {
     const payload = JSON.stringify(data);
     for (const [client, userInfo] of connectedUsers.entries()) {
       // Send to the intended recipient OR to status/control messages
-      if (userInfo.userId === recipientId && client.readyState === WebSocket.OPEN) {
-        client.send(payload);
+        if (userInfo.userId === recipientId && client.readyState === WebSocket.OPEN) {
+        safeSend(client, payload);
         return true;
       }
     }
@@ -56,11 +64,16 @@ const setupWebSocketServer = (httpServer) => {
     ws.on("message", async (rawData) => {
       const data = normalizeIncoming(rawData);
 
+      if (!data || (typeof data === "string" && data.trim() === "")) {
+        return;
+      }
+
       try {
         const msg = JSON.parse(data);
 
         if (msg.type === "ping") {
-          ws.send(
+          safeSend(
+            ws,
             JSON.stringify({
               type: "pong",
               sentAt: msg.sentAt,
@@ -211,9 +224,7 @@ const setupWebSocketServer = (httpServer) => {
           const msgForRecipient = { ...msg, participantId: ws.userId };
 
           // Send to sender's connection to confirm message was sent
-          if (ws.readyState === WebSocket.OPEN) {
-            ws.send(JSON.stringify(msgForSender));
-          }
+          safeSend(ws, JSON.stringify(msgForSender));
           
           // Send to recipient
           const recipientFound = sendToRecipient(msgForRecipient, msg.participantId);
@@ -244,6 +255,11 @@ const setupWebSocketServer = (httpServer) => {
       });
       
       broadcastParticipants();
+    });
+
+    ws.on("error", (err) => {
+      console.error("WebSocket error", err);
+      connectedUsers.delete(ws);
     });
   });
 

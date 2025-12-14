@@ -39,7 +39,7 @@ const setupWebSocketServer = (httpServer) => {
     const payload = JSON.stringify(data);
     for (const [client, userInfo] of connectedUsers.entries()) {
       // Send to the intended recipient OR to status/control messages
-        if (userInfo.userId === recipientId && client.readyState === WebSocket.OPEN) {
+      if (userInfo.userId === recipientId && client.readyState === WebSocket.OPEN) {
         safeSend(client, payload);
         return true;
       }
@@ -64,7 +64,7 @@ const setupWebSocketServer = (httpServer) => {
     ws.on("message", async (rawData) => {
       const data = normalizeIncoming(rawData);
 
-      // Hnadle empty messages
+      // Handle empty messages
       if (!data || (typeof data === "string" && data.trim() === "")) {
         return;
       }
@@ -92,7 +92,7 @@ const setupWebSocketServer = (httpServer) => {
             userId: msg.userId,
             joinedAt: Date.now(),
           });
-          
+
           // Record first chat join timestamp in database if not already recorded
           if (msg.userId) {
             try {
@@ -136,7 +136,7 @@ const setupWebSocketServer = (httpServer) => {
               console.error("Failed to load message history:", error);
             }
           }
-          
+
           broadcastParticipants();
           return;
         }
@@ -150,7 +150,7 @@ const setupWebSocketServer = (httpServer) => {
           try {
             await Message.updateOne(
               { id: msg.id },
-              { 
+              {
                 text: msg.text,
                 edited: true,
                 timestamp: msg.timestamp || Date.now()
@@ -183,7 +183,7 @@ const setupWebSocketServer = (httpServer) => {
           try {
             await Message.updateOne(
               { id: msg.id },
-              { 
+              {
                 seen: true,
                 seenAt: msg.seenAt || new Date()
               }
@@ -220,13 +220,13 @@ const setupWebSocketServer = (httpServer) => {
 
           // Prepare message for sender (participantId = recipient)
           const msgForSender = { ...msg, participantId: msg.participantId };
-          
+
           // Prepare message for recipient (participantId = sender)
           const msgForRecipient = { ...msg, participantId: ws.userId };
 
           // Send to sender's connection to confirm message was sent
           safeSend(ws, JSON.stringify(msgForSender));
-          
+
           // Send to recipient
           const recipientFound = sendToRecipient(msgForRecipient, msg.participantId);
           if (!recipientFound) {
@@ -244,17 +244,17 @@ const setupWebSocketServer = (httpServer) => {
     ws.on("close", () => {
       console.log("Client disconnected");
       const name = ws.userName || "A user";
-      
+
       // Remove from connected users
       connectedUsers.delete(ws);
-      
+
       broadcast({
         type: "status",
         text: `${name} left the chat`,
         username: "System",
         timestamp: Date.now(),
       });
-      
+
       broadcastParticipants();
     });
 

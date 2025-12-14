@@ -47,10 +47,10 @@ export const useWebSocketChat = ({ user = null } = {}) => {
   const sendIdentify = useCallback(
     (name = usernameRef.current, userId = user?.id) => {
       if (socketRef.current?.readyState === WebSocket.OPEN) {
-        socketRef.current.send(JSON.stringify({ 
-          type: "identify", 
+        socketRef.current.send(JSON.stringify({
+          type: "identify",
           username: name,
-          userId 
+          userId
         }));
       }
     },
@@ -93,6 +93,11 @@ export const useWebSocketChat = ({ user = null } = {}) => {
           data = new TextDecoder().decode(data);
         }
 
+        // Handle empty messages
+        if (!data || (typeof data === "string" && data.trim() === "")) {
+          return;
+        }
+
         try {
           const msg = JSON.parse(data);
           if (msg.type === "pong" && typeof msg.sentAt === "number") {
@@ -107,11 +112,11 @@ export const useWebSocketChat = ({ user = null } = {}) => {
               prev.map((m) =>
                 m.id === msg.id
                   ? {
-                      ...m,
-                      text: msg.text,
-                      edited: true,
-                      timestamp: msg.timestamp ?? m.timestamp,
-                    }
+                    ...m,
+                    text: msg.text,
+                    edited: true,
+                    timestamp: msg.timestamp ?? m.timestamp,
+                  }
                   : m
               )
             );

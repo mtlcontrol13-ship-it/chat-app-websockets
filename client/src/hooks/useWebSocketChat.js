@@ -233,25 +233,21 @@ export const useWebSocketChat = ({ user = null } = {}) => {
     };
   }, [isConnected]);
 
-  // Send seen receipts for messages from others once displayed
-  useEffect(() => {
+  // Expose method to send seen receipts (to be called by MessageList when messages are actually viewed)
+  const sendSeenReceipt = useCallback((messageId) => {
     if (!isConnected || !socketRef.current) return;
+    if (seenAckRef.current.has(messageId)) return;
 
-    messages.forEach((msg) => {
-      if (msg.username === username || msg.type === "status") return;
-      if (seenAckRef.current.has(msg.id)) return;
-
-      seenAckRef.current.add(msg.id);
-      socketRef.current.send(
-        JSON.stringify({
-          type: "seen",
-          id: msg.id,
-          username,
-          timestamp: Date.now(),
-        })
-      );
-    });
-  }, [messages, isConnected, username]);
+    seenAckRef.current.add(messageId);
+    socketRef.current.send(
+      JSON.stringify({
+        type: "seen",
+        id: messageId,
+        username,
+        timestamp: Date.now(),
+      })
+    );
+  }, [isConnected, username]);
 
   const sendMessage = useCallback(
     (e, participantId) => {
@@ -404,5 +400,6 @@ export const useWebSocketChat = ({ user = null } = {}) => {
     usernameInputRef,
     setIsEditingName,
     participants,
+    sendSeenReceipt,
   };
 };

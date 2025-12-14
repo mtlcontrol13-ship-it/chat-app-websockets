@@ -14,6 +14,7 @@ const MessageList = ({ participantId }) => {
     startEditingMessage,
     deleteMessage,
     messagesEndRef,
+    sendSeenReceipt,
   } = useChat();
 
   const containerRef = useRef(null);
@@ -40,6 +41,20 @@ const MessageList = ({ participantId }) => {
         return !msg.participantId || msg.participantId === participantId;
       })
     : messages;
+
+  // Send seen receipts only for messages in the currently active chat
+  useEffect(() => {
+    if (!participantId) return; // Don't send seen receipts on home screen
+
+    participantMessages.forEach((msg) => {
+      // Skip own messages and status messages
+      if (msg.username === username || msg.type === "status") return;
+      // Only send for messages from the current participant
+      if (msg.participantId !== participantId) return;
+      
+      sendSeenReceipt(msg.id);
+    });
+  }, [participantMessages, participantId, username, sendSeenReceipt]);
 
   return (
     <div

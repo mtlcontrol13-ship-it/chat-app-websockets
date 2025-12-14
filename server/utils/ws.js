@@ -178,19 +178,26 @@ const setupWebSocketServer = (httpServer) => {
           return;
         }
 
-        // Handle seen status - update in database
+        // Handle seen status - update in database and notify only the sender
         if (msg.type === "seen" && msg.id) {
           try {
-            await Message.updateOne(
-              { id: msg.id },
-              {
-                seen: true,
-                seenAt: msg.seenAt || new Date()
+            const message = await Message.findOne({ id: msg.id });
+            if (message) {
+              await Message.updateOne(
+                { id: msg.id },
+                {
+                  seen: true,
+                  seenAt: msg.seenAt || new Date()
+                }
+              );
+              console.log(`Marked message ${msg.id} as seen`);
+              
+              // Send seen receipt only to the original sender
+              const senderFound = sendToRecipient(msg, message.senderId.toString());
+              if (!senderFound) {
+                console.log(`Original sender not connected for seen receipt`);
               }
-            );
-            console.log(`Marked message ${msg.id} as seen`);
-            // Broadcast seen status to all connected clients
-            broadcast(msg);
+            }
           } catch (error) {
             console.error("Error updating seen status:", error);
           }

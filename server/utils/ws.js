@@ -64,6 +64,7 @@ const setupWebSocketServer = (httpServer) => {
     ws.on("message", async (rawData) => {
       const data = normalizeIncoming(rawData);
 
+      // Hnadle empty messages
       if (!data || (typeof data === "string" && data.trim() === "")) {
         return;
       }

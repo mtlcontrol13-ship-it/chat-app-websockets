@@ -123,13 +123,6 @@ export const useWebSocketChat = ({ user = null } = {}) => {
             return;
           }
 
-          if (msg.type === "seen" && msg.id) {
-            setMessages((prev) =>
-              prev.map((m) => (m.id === msg.id ? { ...m, seen: true } : m))
-            );
-            return;
-          }
-
           if (msg.type === "delete" && msg.id) {
             setMessages((prev) => prev.filter((m) => m.id !== msg.id));
             return;
@@ -167,7 +160,6 @@ export const useWebSocketChat = ({ user = null } = {}) => {
               ...msg,
               id: incomingId,
               edited: !!msg.edited,
-              seen: !!msg.seen,
             },
           ]);
         } catch (e) {
@@ -232,22 +224,6 @@ export const useWebSocketChat = ({ user = null } = {}) => {
       }
     };
   }, [isConnected]);
-
-  // Expose method to send seen receipts (to be called by MessageList when messages are actually viewed)
-  const sendSeenReceipt = useCallback((messageId) => {
-    if (!isConnected || !socketRef.current) return;
-    if (seenAckRef.current.has(messageId)) return;
-
-    seenAckRef.current.add(messageId);
-    socketRef.current.send(
-      JSON.stringify({
-        type: "seen",
-        id: messageId,
-        username,
-        timestamp: Date.now(),
-      })
-    );
-  }, [isConnected, username]);
 
   const sendMessage = useCallback(
     (e, participantId) => {
@@ -400,6 +376,5 @@ export const useWebSocketChat = ({ user = null } = {}) => {
     usernameInputRef,
     setIsEditingName,
     participants,
-    sendSeenReceipt,
   };
 };

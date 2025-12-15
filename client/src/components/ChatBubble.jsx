@@ -3,8 +3,6 @@ import {
   Edit,
   EllipsisVertical,
   Trash2,
-  Check,
-  CheckCheck,
 } from "lucide-react";
 import { useState } from "react";
 
@@ -16,7 +14,6 @@ const ChatBubble = ({
   isEditing = false,
   editValue = "",
   edited = false,
-  seen = false,
   onEditChange,
   onEditSave,
   onEditCancel,
@@ -191,15 +188,6 @@ const ChatBubble = ({
                 </span>
               )}
               <span className="font-medium">{time}</span>
-              {isOwn && (
-                <span title={seen ? "Seen" : "Delivered"}>
-                  {seen ? (
-                    <CheckCheck className="w-3.5 h-3.5 text-white" />
-                  ) : (
-                    <Check className="w-3.5 h-3.5 text-white" />
-                  )}
-                </span>
-              )}
             </div>
           </>
         )}

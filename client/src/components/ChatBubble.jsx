@@ -46,7 +46,7 @@ const ChatBubble = ({
 
   const bubbleWidthClass = isEditing
     ? "w-full max-w-[min(720px,90vw)] min-w-[320px]"
-    : "max-w-[75%]";
+    : "max-w-[75%] min-w-[72px]";
 
   return (
     <div

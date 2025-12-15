@@ -79,33 +79,36 @@ const MessageList = ({ participantId }) => {
           return (
             <div
               key={msg.id}
-              className={`col-span-6 flex ${
-                isOwn ? "justify-end" : "justify-start"
-              }`}
+              className={`
+                col-span-3
+                ${
+                  isOwn
+                    ? "col-start-4 flex justify-end"
+                    : "col-start-1 flex justify-start"
+                }
+              `}
             >
-              {/* Message width control */}
-              <div className="col-span-3">
-                <ChatBubble
-                  text={isEditing ? editingText : msg.text}
-                  time={time}
-                  isOwn={isOwn}
-                  edited={msg.edited}
-                  seen={msg.seen}
-                  showActions={isOwn && !isEditing}
-                  isEditing={isEditing}
-                  editValue={editingText}
-                  onEditChange={setEditingText}
-                  onEditSave={saveEdit}
-                  onEditCancel={cancelEditing}
-                  onEdit={() => startEditingMessage(msg)}
-                  onDelete={() => deleteMessage(msg)}
-                />
-              </div>
+              <ChatBubble
+                text={isEditing ? editingText : msg.text}
+                time={time}
+                isOwn={isOwn}
+                edited={msg.edited}
+                seen={msg.seen}
+                showActions={isOwn && !isEditing}
+                isEditing={isEditing}
+                editValue={editingText}
+                onEditChange={setEditingText}
+                onEditSave={saveEdit}
+                onEditCancel={cancelEditing}
+                onEdit={() => startEditingMessage(msg)}
+                onDelete={() => deleteMessage(msg)}
+              />
             </div>
           );
         })}
       </div>
 
+      {/* Spacer to ensure last message is visible */}
       <div ref={messagesEndRef} />
     </div>
   );

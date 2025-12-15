@@ -1,4 +1,11 @@
-import { CopyIcon, Edit, EllipsisVertical, Trash2, Check, CheckCheck } from "lucide-react";
+import {
+  CopyIcon,
+  Edit,
+  EllipsisVertical,
+  Trash2,
+  Check,
+  CheckCheck,
+} from "lucide-react";
 import { useState } from "react";
 
 const ChatBubble = ({
@@ -19,13 +26,13 @@ const ChatBubble = ({
   const [isHovered, setIsHovered] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [copied, setCopied] = useState(false);
-  
+
   const handleEdit = onEdit ?? (() => {});
   const handleDelete = onDelete ?? (() => {});
   const handleEditChange = onEditChange ?? (() => {});
   const handleEditSave = onEditSave ?? (() => {});
   const handleEditCancel = onEditCancel ?? (() => {});
-  
+
   const bubbleTextColor = isOwn ? "#ffffff" : "#0f172a";
   const bubbleMutedColor = isOwn ? "rgba(255,255,255,0.8)" : "#475569";
 
@@ -54,9 +61,10 @@ const ChatBubble = ({
         className={`
           relative ${bubbleWidthClass} px-4 py-2 text-sm shadow-md
           rounded-2xl text-[#0f172a] transition-all duration-200
-          ${isOwn 
-            ? "bg-[#2563eb] rounded-br-sm hover:shadow-lg" 
-            : "bg-[#e0ecff] rounded-bl-sm hover:shadow-lg"
+          ${
+            isOwn
+              ? "bg-[#2563eb] rounded-br-sm hover:shadow-lg"
+              : "bg-[#e0ecff] rounded-bl-sm hover:shadow-lg"
           }
         `}
       >
@@ -166,7 +174,7 @@ const ChatBubble = ({
           <>
             {/* Message text */}
             <p
-              className="whitespace-pre-line wrap-break-word pr-10 leading-relaxed"
+              className="whitespace-pre-line break-words whitespace-normal pr-10 leading-relaxed"
               style={{ color: bubbleTextColor }}
             >
               {text}
@@ -178,7 +186,9 @@ const ChatBubble = ({
               style={{ color: bubbleMutedColor }}
             >
               {edited && (
-                <span className="italic text-[0.65rem] opacity-80">(edited)</span>
+                <span className="italic text-[0.65rem] opacity-80">
+                  (edited)
+                </span>
               )}
               <span className="font-medium">{time}</span>
               {isOwn && (

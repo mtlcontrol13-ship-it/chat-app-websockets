@@ -45,11 +45,11 @@ const MessageList = ({ participantId }) => {
       )}
 
       {/* 6x6 Grid Container */}
-      <div className="grid grid-cols-6 auto-rows-min gap-y-1">
+      <div className="grid grid-cols-12 gap-y-1">
         {participantMessages.map((msg) => {
           if (msg.type === "status") {
             return (
-              <div key={msg.id} className="col-span-6 flex justify-center">
+              <div key={msg.id}>
                 <div className="text-sm italic px-3 py-1 rounded-full text-(--status-text) bg-(--status-bg)">
                   {msg.text}
                 </div>
@@ -65,32 +65,45 @@ const MessageList = ({ participantId }) => {
           });
 
           return (
-            <div
-              key={msg.id}
-              className={`
-                col-span-3
-                ${
-                  isOwn
-                    ? "col-start-4 flex justify-end"
-                    : "col-start-1 flex justify-start"
-                }
-              `}
-            >
-              <ChatBubble
-                text={isEditing ? editingText : msg.text}
-                time={time}
-                isOwn={isOwn}
-                edited={msg.edited}
-                seen={msg.seen}
-                showActions={isOwn && !isEditing}
-                isEditing={isEditing}
-                editValue={editingText}
-                onEditChange={setEditingText}
-                onEditSave={saveEdit}
-                onEditCancel={cancelEditing}
-                onEdit={() => startEditingMessage(msg)}
-                onDelete={() => deleteMessage(msg)}
-              />
+            <div key={msg.id} className="col-span-12 flex">
+              <div
+                className={`
+                  grid grid-cols-12 w-full
+                `}
+              >
+                {isOwn ? (
+                  // RIGHT SIDE (Sender)
+                  <div className="col-span-6 col-start-7 flex justify-end">
+                    <ChatBubble
+                      text={isEditing ? editingText : msg.text}
+                      time={time}
+                      isOwn={isOwn}
+                      edited={msg.edited}
+                      seen={msg.seen}
+                      showActions={isOwn && !isEditing}
+                      isEditing={isEditing}
+                      editValue={editingText}
+                      onEditChange={setEditingText}
+                      onEditSave={saveEdit}
+                      onEditCancel={cancelEditing}
+                      onEdit={() => startEditingMessage(msg)}
+                      onDelete={() => deleteMessage(msg)}
+                    />
+                  </div>
+                ) : (
+                  // LEFT SIDE (Receiver)
+                  <div className="col-span-6 col-start-1 flex justify-start">
+                    <ChatBubble
+                      text={isEditing ? editingText : msg.text}
+                      time={time}
+                      isOwn={isOwn}
+                      edited={msg.edited}
+                      seen={msg.seen}
+                      showActions={false}
+                    />
+                  </div>
+                )}
+              </div>
             </div>
           );
         })}
